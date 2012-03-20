@@ -1,0 +1,16 @@
+{
+  "name": "ScreenShotW Extension",
+  "version": "1.0",
+  "description": "Take an entire page screenshot",
+  "background_page": "background.html",
+  "browser_action": {
+     "default_icon": "img/camera.png",
+     "default_title": "Take a screen shot!"
+  },
+  "permissions": [
+    "unlimitedStorage",
+    "tabs",
+    "http://*/"
+  ],
+  "manifest_version": 2
+}
