@@ -10,7 +10,7 @@
   "permissions": [
     "unlimitedStorage",
     "tabs",
-    "http://*/"
+    "*://*/"
   ],
   "manifest_version": 2
 }

@@ -1,58 +1,69 @@
 var id = 100;
 
+var isLoaded = false;
+
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+	if(request.action == "notLoaded"){
+		isLoaded = false;
+	}else if(request.action == "loaded"){
+		isLoaded = true;
+	}
+});
+
 function takeScreenshot(tab) {
-//	chrome.windows.getCurrent(function(window){
-//		console.log(window);
-//		var screenshotUrl = img;
-//		var viewTabUrl = 'screenshot.html';
-//		
-//		chrome.tabs.create({url: viewTabUrl}, function(tab) {
-//			var targetId = tab.id;
-//			
-//			var addSnapshotImageToTab = function(tabId, changedProps) {
-//				if (tabId != targetId || changedProps.status != "complete")
-//					return;
-//				
-//				chrome.tabs.onUpdated.removeListener(addSnapshotImageToTab);
-//				var views = chrome.extension.getViews();
-//				for (var i = 0; i < views.length; i++) {
-//					var view = views[i];
-//					if (view.location.href == viewTabUrl) {
-//						view.setScreenshotUrl(screenshotUrl);
-//						break;
-//					}
-//				}
-//			};
-//			chrome.tabs.onUpdated.addListener(addSnapshotImageToTab);
-//			
-//		});
-//	});
-  chrome.tabs.captureVisibleTab(null, function(img) {
-	  var screenshotUrl = img;
-	  var viewTabUrl = [chrome.extension.getURL('screenshot.html'),
+	// test if loaded;
+	chrome.tabs.executeScript(tab.id, {file: 'js/content-isLoad.js'}, function(){
+		console.log(isLoaded);
+		if(!isLoaded){
+			chrome.tabs.executeScript(tab.id, {file: 'js/content-main.js'}, function() {
+				captureEntire();
+			});
+		}else{
+			captureEntire();
+		}
+	});
+}
+
+function captureEntire(){
+	var dfd = $.Deferred();
+	sendScrollRequest().done(function(imgs) {
+		var viewTabUrl = [chrome.extension.getURL('screenshot.html'),
 	                      '?id=', id++].join('');
-	  chrome.tabs.create({url: viewTabUrl}, function(tab) {
-			var targetId = tab.id;
-			var screenshotUrl = img;
-			var viewTabUrl = 'screenshot.html';
-			var addSnapshotImageToTab = function(tabId, changedProps) {
-				if (tabId != targetId || changedProps.status != "complete")
-					return;
-				
-				chrome.tabs.onUpdated.removeListener(addSnapshotImageToTab);
-				var views = chrome.extension.getViews();
-				for (var i = 0; i < views.length; i++) {
-					var view = views[i];
-					if (view.location.href == viewTabUrl) {
-						view.setScreenshotUrl(screenshotUrl);
-						break;
+		localStorage.setItem("imgs",JSON.stringify(imgs));
+		chrome.tabs.create({url: viewTabUrl});
+	});
+	return dfd.promise();
+}
+
+
+function captureVisible(){
+	  var dfd = $.Deferred();
+	  chrome.tabs.captureVisibleTab(null, function(img) {
+		  dfd.resolve(img);
+	  });
+	  return dfd.promise();
+}
+
+function sendScrollRequest(){
+	var imgs = [];
+	var dfd = $.Deferred();
+	nextRequest(true);
+	
+	function nextRequest(first){
+		chrome.tabs.getSelected(null, function(tab) {
+			chrome.tabs.sendRequest(tab.id, {action:'scroll',data:{first:first}}, function(response) {
+				captureVisible().done(function(img){
+					imgs.push({img:img,reduceHeight:response.reduceHeight});
+					if(!response.complete){
+						nextRequest(false);
+					}else{
+						dfd.resolve(imgs);
 					}
-				}
-			};
-			chrome.tabs.onUpdated.addListener(addSnapshotImageToTab);
-			
+				});
+			});
 		});
-  });
+	}
+	return dfd.promise();
 }
 
 // Listen for a click on the camera icon.  On that click, take a screenshot.
