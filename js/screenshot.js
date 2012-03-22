@@ -1,5 +1,8 @@
 $(function() {
 	var imgs = JSON.parse(localStorage.getItem("imgs"));
+	var canvasWidth = JSON.parse(localStorage.getItem("width"));
+	var canvasHeight = JSON.parse(localStorage.getItem("height"));
+	console.log(canvasWidth);
 	//use <img> to load img
 //	for(var i = 0; i < imgs.length; i++){
 //		var $img = $("<img></img>")
@@ -12,30 +15,37 @@ $(function() {
 //	}
 	//use <canvas> to load img
 	var images = [];
-	var $canvas = $("<canvas width=0 height=0></canvas>");
+	var $canvas = $("<canvas width="+canvasWidth+" height="+canvasHeight+"></canvas>");
 	$("#page").append($canvas);
 	var gtx = brite.gtx($("#page").find("canvas"));
-	gtx.fitParent();
-	var height = 0;
-	var y = 1 ;
-	var init = true;
 	serialResolve(imgs,function(imgObj,i){
 		var dfd = $.Deferred();
 		var image = new Image();
 		image.src = imgObj.img;
 		images.push[image];
 		image.onload = function(){
-			if(init){
-				$canvas[0].height = imgs.length * image.height - imgs[imgs.length - 1].reduceHeight;
-				init = false;
+			var sourceX = 0;
+			var sourceY = 0;
+			var sourceWidth = imgObj.remainArea.remainWidth;
+			var sourceHeight = imgObj.remainArea.remainHeight;
+			var destX = imgObj.coop.x;
+			var destY = imgObj.coop.y;
+			var destWidth = imgObj.remainArea.remainWidth;
+			var destHeight = imgObj.remainArea.remainHeight;
+			if(imgObj.complete.x){
+				sourceX = image.width - sourceWidth;
 			}
-			if(i != imgs.length - 1){
-				gtx.drawImage(image,0,y);
-			}else{
-				var reduceHeight = imgs[imgs.length - 1].reduceHeight;
-				gtx.drawImage(image, 0, reduceHeight, image.width, image.height - reduceHeight,0, y, image.width, image.height - reduceHeight);
+			if(imgObj.complete.y){
+				sourceY = image.height - sourceHeight;
 			}
-			y = y + image.height;
+			console.log("--------");
+			console.log(imgObj.remainArea);
+			console.log("destX:"+destX);
+			console.log("destY:"+destY);
+			console.log("destWidth:"+destWidth);
+			console.log("destHeight:"+destHeight);
+			gtx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight,destX,destY, destWidth, destHeight);
+			
 			dfd.resolve();
 		}
 		return dfd.promise();
