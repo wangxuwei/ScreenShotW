@@ -1,0 +1,19 @@
+.ico{
+	float:left;
+	height:22px;
+	width:22px;
+	display:block;
+	background-image:url('images/icons.png');
+}
+
+.icoEmpty{
+  background:none;
+  margin:6px;
+  float:right;
+}
+
+.icoArrow{
+	background-position: -60px 1px;
+}
+
+
