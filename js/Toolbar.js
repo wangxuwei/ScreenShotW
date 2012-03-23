@@ -15,9 +15,7 @@
 			var $this = $(this);
 			$this.closest(".toolbar").find(".item").removeClass("press");
 			$this.toggleClass("press");
-			if($this.attr("data-value") == "arrow"){
-				app.drawMode = "arrow";
-			}
+			app.drawMode = $this.attr("data-value");
 			if($this.closest(".toolbar").find(".item.press").size()==0){
 				app.drawMode = "";
 			}

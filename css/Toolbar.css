@@ -15,6 +15,7 @@
 	-webkit-border-bottom-right-radius:6px;
 }
 .toolbar .item{
+	float:left;
 	cursor:pointer;
 	width:22px;
 	height:22px;
