@@ -11,6 +11,5 @@
     "unlimitedStorage",
     "tabs",
     "*://*/"
-  ],
-  "manifest_version": 2
+  ]
 }

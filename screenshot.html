@@ -4,20 +4,30 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>ScreenShot</title>
         
-        <link rel="stylesheet" type="text/css" href="css/main.css">
-        <link rel="stylesheet" type="text/css" href="css/ico.css">
+        <link rel="stylesheet" type="text/css" href="css/app-main.css">
+        <link rel="stylesheet" type="text/css" href="css/app-ico.css">
+        <link rel="stylesheet" type="text/css" href="css/MainScreen.css">
+        <link rel="stylesheet" type="text/css" href="css/Toolbar.css">
+        <link rel="stylesheet" type="text/css" href="css/BaseArea.css">
+        <link rel="stylesheet" type="text/css" href="css/EditArea.css">
         
         <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/handlebars-1.0.0.beta.6.js"></script>
+        <script type="text/javascript" src="js/handlebars.common.helper.js"></script>
         <script type="text/javascript" src="js/brite.js"></script>
-        <script type="text/javascript" src="js/screenshot.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        
+        <script type="text/javascript" src="js/MainScreen.js"></script>
+        <script type="text/javascript" src="js/Toolbar.js"></script>
+        <script type="text/javascript" src="js/BaseArea.js"></script>
+        <script type="text/javascript" src="js/EditArea.js"></script>
     </head>
     <body>
-        <div id="top">
-            <div class="toolbar">
-                <div class="item " data-value="arrow"><span class="ico icoArrow"></span></div>
-            </div>
-        </div>
         <div id="page"></div>
     </body>
-        
+    <script>
+        $(document).ready(function(){
+            brite.display('MainScreen');
+        });
+    </script>
 </html>
