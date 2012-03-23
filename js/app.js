@@ -35,32 +35,57 @@ var app = app || {};
     	return dfd.promise();    		
 	}
 	
-	app.draw = function($canvas,dtX,dtY){
-		if(app.mode){
-			if(app.mode == "arrow"){
-				drawArrow($canvas,dtX,dtY);
+	app.draw = function($canvas,dtX,dtY,coop,notClear){
+		if(app.drawMode){
+			if(app.drawMode == "arrow"){
+				drawArrow($canvas,dtX,dtY,coop,notClear);
 			}
 		}
 	}
 	
-	function drawArrow($canvas,dtX,dtY){
-		var gtx = brite.gtx($canvas);
-		gtx.fitParent();
-		var width = $canvas.width();
-		var height = $canvas.height();
-		var D = Math.sqrt(width * width + height * height);
+	function getPoints(width,height,dtX,dtY,coop){
 		var x0 = 0;
 		var y0 = 0;
 		var x1 = width;
 		var y1 = height;
+		if(coop){
+			x0 = coop.startX;
+			y0 = coop.startY;
+			x1 = coop.endX;
+			y1 = coop.endY;
+		}
 		if(!dtX){
 			x0 = width;
 			x1 = 0;
+			if(coop){
+				x0 = coop.endX;
+				x1 = coop.startX;
+			}
 		}
 		if(!dtY){
 			y0 = height;
 			y1 = 0;
+			if(coop){
+				y0 = coop.endY;
+				y1 = coop.startY;
+			}
 		}
+		return {x0:x0,y0:y0,x1:x1,y1:y1};
+	}
+	
+	function drawArrow($canvas,dtX,dtY,coop,notClear){
+		var gtx = brite.gtx($canvas);
+		if(!notClear){
+			gtx.fitParent();
+		}
+		var width = $canvas.width();
+		var height = $canvas.height();
+		var points = getPoints(width,height,dtX,dtY,coop);
+		var x0 = points.x0;
+		var y0 = points.y0;
+		var x1 = points.x1;
+		var y1 = points.y1;
+		var D = Math.sqrt((x0-x1) * (x0-x1) + (y0-y1) * (y0-y1));
 		
 		gtx.strokeStyle("#ff0000");
 		gtx.lineWidth(3);

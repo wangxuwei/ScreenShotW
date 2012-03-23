@@ -1,6 +1,7 @@
 (function($){
 
 	function EditArea(){};
+	var _prevGraphics = {};
   
 	// --------- Component Interface Implementation ---------- //
 	EditArea.prototype.create = function(data,config){
@@ -16,6 +17,17 @@
 		
 		$baseArea.bDrag({
 			start:function(event,dragExtra){
+				//save prev graphics
+				$baseArea.trigger("saveEditCanvasContent",{
+					save:_prevGraphics.save,
+					startX:_prevGraphics.startX,
+					startY:_prevGraphics.startY,
+					endX:_prevGraphics.endX,
+					endY:_prevGraphics.endY,
+					dtX:_prevGraphics.dtX,
+					dtY:_prevGraphics.dtY,
+				});
+				
 				$editArea.width(0);
 				$editArea.height(0);
 				var left = dragExtra.startPageX - $baseArea.offset().left;
@@ -39,6 +51,8 @@
 					dtY = false;
 				}
 				app.draw($editCanvas,dtX,dtY);
+				
+				savePrevGraphics.call(c,dtX,dtY);
 			},
 			end:function(event,dragExtra){
 				
@@ -48,7 +62,23 @@
 	// --------- /Component Interface Implementation ---------- //
 	
 	// --------- Component Private API --------- //	
-	
+	savePrevGraphics = function(dtX,dtY){
+		var c = this;
+		var $e = c.$element;
+		var $editArea = $e;
+		var pos = $editArea.position();
+		if(!app.drawMode || app.drawMode == ""){
+			_prevGraphics.save = false;
+		}else{
+			_prevGraphics.save = true;
+		}
+		_prevGraphics.dtX = dtX;
+		_prevGraphics.dtY = dtY;
+		_prevGraphics.startX = pos.left;
+		_prevGraphics.startY = pos.top;
+		_prevGraphics.endX = pos.left + $editArea.width();
+		_prevGraphics.endY = pos.top + $editArea.height();
+	}
 	// --------- /Component Private API --------- //
 	
 	// --------- Component Registration --------- //

@@ -17,7 +17,9 @@ var app = app || {};
 		//use <canvas> to load img
 		$e.width(canvasWidth);
 		$e.height(canvasHeight);
+		
 		var $canvas = $e.find(".baseAreaCanvas");
+		c.$canvas = $canvas;
 		var gtx = brite.gtx($canvas);
 		gtx.fitParent();
 		app.serialResolve(imgs,function(imgObj,i){
@@ -51,6 +53,13 @@ var app = app || {};
 	BaseArea.prototype.postDisplay = function(data,config){
 		var c = this;
 		var $e = this.$element;
+		var $canvas = c.$canvas;
+		
+		$e.bind("saveEditCanvasContent",function(e,extra){
+			if(extra.save){
+				app.draw($canvas,extra.dtX,extra.dtY,{startX:extra.startX,startY:extra.startY,endX:extra.endX,endY:extra.endY},true);
+			}
+		});
 
 	}
 	// --------- /Component Interface Implementation ---------- //

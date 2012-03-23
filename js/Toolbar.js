@@ -14,9 +14,12 @@
 		$e.delegate(".item","click",function(){
 			var $this = $(this);
 			$this.closest(".toolbar").find(".item").removeClass("press");
-			$this.addClass("press");
+			$this.toggleClass("press");
 			if($this.attr("data-value") == "arrow"){
-				app.mode = "arrow";
+				app.drawMode = "arrow";
+			}
+			if($this.closest(".toolbar").find(".item.press").size()==0){
+				app.drawMode = "";
 			}
 		});
 	}
