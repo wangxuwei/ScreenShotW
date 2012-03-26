@@ -2,6 +2,7 @@ var id = 100;
 
 var isLoaded = false;
 
+//accept the request from popup.html, content script
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	if(request.action == "notLoaded"){
 		isLoaded = false;
@@ -16,6 +17,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}
 });
 
+// the screenshot control method, which can do screenshot by type
 function takeScreenshot(type) {
 	chrome.tabs.getSelected(null, function(tab) {
 		console.log(tab);
@@ -52,6 +54,7 @@ function takeScreenshot(type) {
 	});
 }
 
+// do screenshot with entire full page
 function captureEntire(){
 	var dfd = $.Deferred();
 	sendScrollRequest().done(function(data) {
@@ -64,7 +67,7 @@ function captureEntire(){
 	return dfd.promise();
 }
 
-
+//do screenshot with visible part
 function captureVisible(){
 	var dfd = $.Deferred();
 	chrome.tabs.captureVisibleTab(null, function(img) {
@@ -82,10 +85,13 @@ function captureVisible(){
 	return dfd.promise();
 }
 
+//do screenshot with selected area
 function captureSelected(){
 	  //do something here....
 }
 
+
+// capture api
 function capture(){
 	var dfd = $.Deferred();
 	
@@ -101,6 +107,8 @@ function capture(){
 	return dfd.promise();
 }
 
+
+// scrolling the page when doing entire full page screenshot
 function sendScrollRequest(){
 	var imgs = [];
 	var dfd = $.Deferred();

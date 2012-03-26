@@ -1,5 +1,7 @@
 var isContentScriptLoaded = true;
 var overflowStyle = "";
+
+//accept the request from the background.js
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	var data = request.data || {};
     if (request.action == "scroll"){
@@ -49,6 +51,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     }
 });
 
+//do scrolling
 function scrollNext(xfirst,yfirst,xMove,yMove){
 	var prevScrollTop = document.body.scrollTop;
 	var prevScrollLeft = document.body.scrollLeft;
@@ -87,11 +90,9 @@ function scrollNext(xfirst,yfirst,xMove,yMove){
 		yComplete = true;
 	}
 	var ret = {xComplete:xComplete,yComplete:yComplete};
-	console.log(prevScrollLeft + vWidth);
-	console.log(width);
-	console.log(JSON.stringify(ret));
 	return ret;
 }
+
 
 function getWidth(){
 	if(document.documentElement.scrollWidth < document.documentElement.clientWidth){
