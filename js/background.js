@@ -66,7 +66,20 @@ function captureEntire(){
 
 
 function captureVisible(){
-	  //do something here....
+	var dfd = $.Deferred();
+	chrome.tabs.captureVisibleTab(null, function(img) {
+		var t = new Image();
+		t.src = img;
+		t.onload = function() {
+			  console.log(t);
+			  localStorage.setItem("type", JSON.stringify("visible"));
+			  localStorage.setItem("imgs", img);
+			  localStorage.setItem("width", t.width);
+			  localStorage.setItem("height", t.height);
+			  dfd.resolve(img);
+		  }
+	});
+	return dfd.promise();
 }
 
 function captureSelected(){
