@@ -2,6 +2,8 @@ var app = app || {};
 (function($){
 
 	function BaseArea(){};
+	var _xmlAnnotation = [];
+	
   
 	// --------- Component Interface Implementation ---------- //
 	BaseArea.prototype.create = function(data,config){
@@ -84,6 +86,10 @@ var app = app || {};
 		
 		$e.bind("saveEditCanvasContent",function(e,extra){
 			if(extra.save){
+				var _xmlString = "";
+				_xmlString = "<"+app.drawMode+" from=\""+extra.startX+";"+extra.startY+"\" to=\""+extra.endX+";"+extra.endY+"\" />"
+				_xmlAnnotation.push(_xmlString);
+				console.log(_xmlAnnotation);
 				app.draw($canvas,extra.dtX,extra.dtY,{startX:extra.startX,startY:extra.startY,endX:extra.endX,endY:extra.endY},true);
 			}
 		});
