@@ -87,10 +87,9 @@ var app = app || {};
 		$e.bind("saveEditCanvasContent",function(e,extra){
 			if(extra.save){
 				var _xmlString = "";
-				_xmlString = "<"+app.drawMode+" from=\""+extra.startX+";"+extra.startY+"\" to=\""+extra.endX+";"+extra.endY+"\" />"
+				_xmlString = "<"+extra.drawMode+" from=\""+extra.startX+";"+extra.startY+"\" to=\""+extra.endX+";"+extra.endY+"\" />"
 				_xmlAnnotation.push(_xmlString);
-				console.log(_xmlAnnotation);
-				app.draw($canvas,extra.dtX,extra.dtY,{startX:extra.startX,startY:extra.startY,endX:extra.endX,endY:extra.endY},true);
+				app.draw($canvas,extra.dtX,extra.dtY,{startX:extra.startX,startY:extra.startY,endX:extra.endX,endY:extra.endY},true,extra.drawMode);
 			}
 		});
 

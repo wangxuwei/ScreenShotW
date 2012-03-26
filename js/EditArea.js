@@ -19,6 +19,7 @@
 			start:function(event,dragExtra){
 				//save prev graphics
 				$baseArea.trigger("saveEditCanvasContent",{
+					drawMode:_prevGraphics.drawMode,
 					save:_prevGraphics.save,
 					startX:_prevGraphics.startX,
 					startY:_prevGraphics.startY,
@@ -72,6 +73,7 @@
 		}else{
 			_prevGraphics.save = true;
 		}
+		_prevGraphics.drawMode = app.drawMode;
 		_prevGraphics.dtX = dtX;
 		_prevGraphics.dtY = dtY;
 		_prevGraphics.startX = pos.left;

@@ -35,15 +35,18 @@ var app = app || {};
     	return dfd.promise();    		
 	}
 	
-	app.draw = function($canvas,dtX,dtY,coop,notClear){
-		if(app.drawMode){
-			if(app.drawMode == "arrow"){
+	app.draw = function($canvas,dtX,dtY,coop,notClear,drawMode){
+		if(!drawMode){
+			drawMode = app.drawMode;
+		}
+		if(drawMode){
+			if(drawMode == "arrow"){
 				drawArrow($canvas,dtX,dtY,coop,notClear);
-			}else if(app.drawMode == "rect"){
+			}else if(drawMode == "rect"){
 				drawRect($canvas,dtX,dtY,coop,notClear);
-			}else if(app.drawMode == "line"){
+			}else if(drawMode == "line"){
 				drawLine($canvas,dtX,dtY,coop,notClear);
-			}else if(app.drawMode == "eclipse"){
+			}else if(drawMode == "eclipse"){
 //				drawEclipse($canvas,dtX,dtY,coop,notClear);
 			}
 		}
