@@ -24,13 +24,19 @@ function takeScreenshot(type) {
 		var loadDfd = $.Deferred();
 		// test if loaded;
 		chrome.tabs.executeScript(tab.id, {file: 'js/content-isLoad.js'}, function(){
-			if(!isLoaded){
-				chrome.tabs.executeScript(tab.id, {file: 'js/content-main.js'}, function() {
-					loadDfd.resolve();
-				});
-			}else{
-				loadDfd.resolve();
-			}
+			if (!isLoaded) {
+				    chrome.tabs.insertCSS(tab.id, {
+					      file : 'css/selected.css'
+				      }, function() {
+					      chrome.tabs.executeScript(tab.id, {
+						        file : 'js/content-main.js'
+					        }, function() {
+						        loadDfd.resolve();
+					        });
+				      });
+			    } else {
+				    loadDfd.resolve();
+			    }
 		});
 		
 		loadDfd.done(function(){
@@ -85,16 +91,25 @@ function captureVisible(){
 	return dfd.promise();
 }
 
-//do screenshot with selected area
-function captureSelected(){
-	  //do something here....
+// do screenshot with selected area
+function captureSelected() {
+	// do something here....
+	var dfd = $.Deferred();
+	chrome.tabs.getSelected(null, function(tab) {
+		  chrome.tabs.sendRequest(tab.id, {
+			    action : 'mask',
+			    data : {}
+		    }, function(response) {
+			    dfd.resolve();
+		    });
+	  });
+	return dfd.promise();
 }
 
 
 // capture api
 function capture(){
 	var dfd = $.Deferred();
-	
 	chrome.tabs.captureVisibleTab(null, function(img) {
 		var t = new Image();
 		t.src = img;
