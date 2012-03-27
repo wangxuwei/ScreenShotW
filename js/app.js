@@ -46,8 +46,8 @@ var app = app || {};
 				drawRect($canvas,dtX,dtY,coop,notClear);
 			}else if(drawMode == "line"){
 				drawLine($canvas,dtX,dtY,coop,notClear);
-			}else if(drawMode == "eclipse"){
-//				drawEclipse($canvas,dtX,dtY,coop,notClear);
+			}else if(drawMode == "ellipse"){
+				drawEllipse($canvas,dtX,dtY,coop,notClear);
 			}
 		}
 	}
@@ -163,35 +163,49 @@ var app = app || {};
 		
 	}
 	
-//	function drawEclipse($canvas,dtX,dtY,coop,notClear){
-//		var gtx = brite.gtx($canvas);
-//		if(!notClear){
-//			gtx.fitParent();
-//		}
-//		var width = $canvas.width();
-//		var height = $canvas.height();
-//		var points = getPoints(width,height,dtX,dtY,coop);
-//		var x0 = points.x0;
-//		var y0 = points.y0;
-//		var x1 = points.x1;
-//		var y1 = points.y1;
-//		
-//		var k = 0.5522848;
-//        var xo = ((x1-x0) / 2) * k;
-//        var yo = ((y1-y0) / 2) * k;
-//        var xm = x1 / 2;
-//        var ym = y1 / 2;
-//        
-//        gtx.strokeStyle("#ff0000");
-//		gtx.lineWidth(3);
-//		gtx.beginPath();
-//		gtx.moveTo(x0, ym);
-//		gtx.bezierCurveTo(x0, ym - yo, xm - xo, y0, xm, y0);
-//		gtx.bezierCurveTo(xm + xo, y0, x1, ym - yo, x1, ym);
-//		gtx.bezierCurveTo(x1, ym + yo, xm + xo, y1, xm, y1);
-//		gtx.bezierCurveTo(xm - xo, y1, x0, ym + yo, x0, ym);
-//		gtx.stroke();
-//		
-//	}
+	function drawEllipse($canvas,dtX,dtY,coop,notClear){
+		var gtx = brite.gtx($canvas);
+		if(!notClear){
+			gtx.fitParent();
+		}
+		var width = $canvas.width();
+		var height = $canvas.height();
+		var points = getPoints(width,height,dtX,dtY,coop);
+		var x0 = points.x0;
+		var y0 = points.y0;
+		var x1 = points.x1;
+		var y1 = points.y1;
+		var centerX = (x0 + x1 ) / 2;
+		var centerY = (y0 + y1 ) / 2;
+		var rWidth = Math.abs(x0 - x1);
+		var rHeight = Math.abs(y0 - y1);
+
+		gtx.strokeStyle("#ff0000");
+		gtx.lineWidth(3);
+		var x = x0 > x1 ? x1 : x0;
+		var y = y0 > y1 ? y1 : y0;
+		var k = .5522848;
+		ox = (rWidth / 2) * k, // control point offset horizontal
+		oy = (rHeight  / 2) * k, // control point offset vertical
+		xe = x + rWidth, // x-end
+		ye = y + rHeight, // y-end
+		xm = x + rWidth / 2, // x-middle
+		ym = y + rHeight / 2; // y-middle
+		var b = 2;
+		x = x + b;
+		y = y + b;
+		xe = xe - b;
+		ye = ye - b;
+
+		gtx.beginPath();
+		gtx.moveTo(x, ym);
+		gtx.bezierCurveTo(x , ym - oy, xm - ox, y, xm, y);
+		gtx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+		gtx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+		gtx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+		gtx.closePath();
+		gtx.stroke();
+		
+	}
 })(jQuery);
 
