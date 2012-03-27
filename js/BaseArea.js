@@ -85,11 +85,12 @@ var app = app || {};
 		var $canvas = c.$canvas;
 		
 		$e.bind("saveEditCanvasContent",function(e,extra){
-			if(extra.save){
+			var graphics = extra.graphics;
+			if(graphics.save){
 				var _xmlString = "";
-				_xmlString = "<"+extra.drawMode+" from=\""+extra.startX+";"+extra.startY+"\" to=\""+extra.endX+";"+extra.endY+"\" />"
+				_xmlString = "<"+graphics.drawMode+" from=\""+graphics.startX+";"+graphics.startY+"\" to=\""+graphics.endX+";"+graphics.endY+"\" />"
 				_xmlAnnotation.push(_xmlString);
-				app.draw($canvas,extra.dtX,extra.dtY,{startX:extra.startX,startY:extra.startY,endX:extra.endX,endY:extra.endY},true,extra.drawMode);
+				app.draw($canvas,graphics,true);
 			}
 		});
 

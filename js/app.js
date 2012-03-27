@@ -35,65 +35,34 @@ var app = app || {};
     	return dfd.promise();    		
 	}
 	
-	app.draw = function($canvas,dtX,dtY,coop,notClear,drawMode){
+	app.draw = function($canvas,graphics,notClear){
+		var drawMode = graphics.drawMode;
 		if(!drawMode){
 			drawMode = app.drawMode;
 		}
 		if(drawMode){
 			if(drawMode == "arrow"){
-				drawArrow($canvas,dtX,dtY,coop,notClear);
+				drawArrow($canvas,graphics,notClear);
 			}else if(drawMode == "rect"){
-				drawRect($canvas,dtX,dtY,coop,notClear);
+				drawRect($canvas,graphics,notClear);
 			}else if(drawMode == "line"){
-				drawLine($canvas,dtX,dtY,coop,notClear);
+				drawLine($canvas,graphics,notClear);
 			}else if(drawMode == "ellipse"){
-				drawEllipse($canvas,dtX,dtY,coop,notClear);
+				drawEllipse($canvas,graphics,notClear);
 			}
 		}
 	}
 	
-	function getPoints(width,height,dtX,dtY,coop){
-		var x0 = 0;
-		var y0 = 0;
-		var x1 = width;
-		var y1 = height;
-		if(coop){
-			x0 = coop.startX;
-			y0 = coop.startY;
-			x1 = coop.endX;
-			y1 = coop.endY;
-		}
-		if(!dtX){
-			x0 = width;
-			x1 = 0;
-			if(coop){
-				x0 = coop.endX;
-				x1 = coop.startX;
-			}
-		}
-		if(!dtY){
-			y0 = height;
-			y1 = 0;
-			if(coop){
-				y0 = coop.endY;
-				y1 = coop.startY;
-			}
-		}
-		return {x0:x0,y0:y0,x1:x1,y1:y1};
-	}
-	
-	function drawArrow($canvas,dtX,dtY,coop,notClear){
+	function drawArrow($canvas,graphics,notClear){
 		var gtx = brite.gtx($canvas);
 		if(!notClear){
 			gtx.fitParent();
 		}
-		var width = $canvas.width();
-		var height = $canvas.height();
-		var points = getPoints(width,height,dtX,dtY,coop);
-		var x0 = points.x0;
-		var y0 = points.y0;
-		var x1 = points.x1;
-		var y1 = points.y1;
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		var x1 = points.endX;
+		var y1 = points.endY;
 		var D = Math.sqrt((x0-x1) * (x0-x1) + (y0-y1) * (y0-y1));
 		
 		gtx.strokeStyle("#ff0000");
@@ -115,18 +84,18 @@ var app = app || {};
 		gtx.stroke();
 	}
 	
-	function drawRect($canvas,dtX,dtY,coop,notClear){
+	function drawRect($canvas,graphics,notClear){
 		var gtx = brite.gtx($canvas);
 		if(!notClear){
 			gtx.fitParent();
 		}
 		var width = $canvas.width();
 		var height = $canvas.height();
-		var points = getPoints(width,height,dtX,dtY,coop);
-		var x0 = points.x0;
-		var y0 = points.y0;
-		var x1 = points.x1;
-		var y1 = points.y1;
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		var x1 = points.endX;
+		var y1 = points.endY;
 		var cx = (x0 - x1) < 0 ? 2 : -2;
 		var cy = (y0 - y1) < 0 ? 2 : -2;
 		
@@ -142,18 +111,18 @@ var app = app || {};
 		
 	}
 	
-	function drawLine($canvas,dtX,dtY,coop,notClear){
+	function drawLine($canvas,graphics,notClear){
 		var gtx = brite.gtx($canvas);
 		if(!notClear){
 			gtx.fitParent();
 		}
 		var width = $canvas.width();
 		var height = $canvas.height();
-		var points = getPoints(width,height,dtX,dtY,coop);
-		var x0 = points.x0;
-		var y0 = points.y0;
-		var x1 = points.x1;
-		var y1 = points.y1;
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		var x1 = points.endX;
+		var y1 = points.endY;
 		
 		gtx.strokeStyle("#ff0000");
 		gtx.lineWidth(3);
@@ -163,18 +132,16 @@ var app = app || {};
 		
 	}
 	
-	function drawEllipse($canvas,dtX,dtY,coop,notClear){
+	function drawEllipse($canvas,graphics,notClear){
 		var gtx = brite.gtx($canvas);
 		if(!notClear){
 			gtx.fitParent();
 		}
-		var width = $canvas.width();
-		var height = $canvas.height();
-		var points = getPoints(width,height,dtX,dtY,coop);
-		var x0 = points.x0;
-		var y0 = points.y0;
-		var x1 = points.x1;
-		var y1 = points.y1;
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		var x1 = points.endX;
+		var y1 = points.endY;
 		var centerX = (x0 + x1 ) / 2;
 		var centerY = (y0 + y1 ) / 2;
 		var rWidth = Math.abs(x0 - x1);
@@ -207,5 +174,7 @@ var app = app || {};
 		gtx.stroke();
 		
 	}
+	
+	
 })(jQuery);
 
