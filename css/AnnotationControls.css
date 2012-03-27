@@ -1,0 +1,33 @@
+.annotationControls{
+	width:300px;
+	height:22px;
+	margin:25px auto 0 auto;
+	-webkit-border-radius:6px;
+	background:-webkit-gradient(linear,0% 0%, 0% 100%, from(#fcfcfc), to(#d4d4d4));
+}
+
+.annotationControls .annotationControl:first-child{
+	-webkit-border-top-left-radius:6px;
+	-webkit-border-bottom-left-radius:6px;
+}
+.annotationControls .annotationControl:last-child{
+	-webkit-border-top-right-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
+}
+.annotationControls .annotationControl{
+	float:left;
+	cursor:pointer;
+	width:22px;
+	height:22px;
+	padding:0px 2px;
+}
+.annotationControls .annotationControl *{
+	cursor:pointer;
+}
+
+.annotationControls .annotationControl.press{
+	background:#f9f8f6;
+}
+.annotationControls .annotationControl:hover{
+	background:#f9f8f6;
+}
