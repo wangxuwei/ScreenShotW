@@ -8,7 +8,7 @@ $(document).ready(function(){
 		}else if (type == 'entire') {
 			chrome.extension.sendRequest({action:'cmdEntire'});
 		}else if (type == 'selected') {
-			//FIXME
+			chrome.extension.sendRequest({action:'cmdSelected'});
 		}
 	});
 	
