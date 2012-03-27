@@ -1,9 +1,14 @@
+var app = app || {};
 (function($){
 
 	function EditArea(){};
+	
 	var _prevGraphics = {};
-	var _startX, _startY, endX, endY;
+	var _startX=0, _startY=0, _endX=0, _endY=0;
 	var _locusPoints = [];
+	var _text = "";
+	
+	var _$input = null;
   
 	// --------- Component Interface Implementation ---------- //
 	EditArea.prototype.create = function(data,config){
@@ -14,11 +19,12 @@
 		var c = this;
 		var $e = this.$element;
 		var $editArea = $e;
+		var $editAreaContent = $e.find(".editAreaContent");
 		var $editCanvas = $e.find("canvas");
 		var thisOffset = $editArea.offset();
 		var $baseArea = $e.bComponent("BaseArea").$element;
 		
-		$baseArea.bDrag({
+		$editArea.bDrag({
 			start:function(event,dragExtra){
 				//save prev graphics
 				$baseArea.trigger("saveEditCanvasContent",{
@@ -42,11 +48,41 @@
 				
 			}
 		});
+		
+		$editArea.click(function(e){
+			if(app.drawMode == "text"){
+				var $inputScreen = $("<div class='inputScreen'><div>").appendTo($editAreaContent);
+				var $testText = $("<div class='testText'><div>").appendTo($editAreaContent);
+				_$input = $("<input type='text' class='inputText' />").appendTo($editAreaContent);
+				_$input.focus();
+				var left = e.pageX - thisOffset.left;
+				var top = e.pageY - thisOffset.top;
+				_startX = left;
+				_startY = top;
+				_$input.css("left", left + "px");
+				_$input.css("top", top + "px");
+				
+				_$input.bind("keyup keydown blur update",function(){
+					checkInputWidth(_$input,$testText);
+				});
+				
+				$inputScreen.click(function(se){
+					_text = _$input.val();
+					savePrevGraphics.call(c);
+					$baseArea.trigger("saveEditCanvasContent", {
+						graphics : _prevGraphics
+					});
+					_$input.remove();
+					$testText.remove();
+					$inputScreen.remove();
+				});
+			}
+		});
 	}
 	// --------- /Component Interface Implementation ---------- //
 	
 	// --------- Component Private API --------- //	
-	savePrevGraphics = function(dtX,dtY){
+	savePrevGraphics = function(){
 		var c = this;
 		var $e = c.$element;
 		var $editArea = $e;
@@ -58,6 +94,12 @@
 		_prevGraphics.drawMode = app.drawMode;
 		_prevGraphics.criticalPoints = {startX:_startX,startY:_startY,endX:_endX,endY:_endY};
 		_prevGraphics.locusPoints = _locusPoints;
+		_prevGraphics.text = _text;
+	}
+	
+	function checkInputWidth($input,$testText){
+		$testText.html($input.val());
+		$input.width($testText.width());
 	}
 	// --------- /Component Private API --------- //
 	

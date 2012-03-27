@@ -51,6 +51,8 @@ var app = app || {};
 				drawEllipse($canvas,graphics,notClear);
 			}else if(drawMode == "curve"){
 				drawCurve($canvas,graphics,notClear);
+			}else if(drawMode == "text"){
+				drawText($canvas,graphics,notClear);
 			}
 		}
 	}
@@ -199,6 +201,20 @@ var app = app || {};
 			}
 			gtx.stroke();
 		}
+	}
+	
+	function drawText($canvas,graphics,notClear){
+		var gtx = brite.gtx($canvas);
+		if(!notClear){
+			gtx.fitParent();
+		}
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		
+		gtx.fillStyle("#ff0000");
+		gtx.font("bold 14px Arial");
+		gtx.fillText(graphics.text,x0 + 1,y0 + 13);
 	}
 	
 	

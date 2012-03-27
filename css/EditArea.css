@@ -2,3 +2,34 @@
 	position:absolute;
 	left:0;top:0;bottom:0;right:0;
 }
+.editArea .editAreaContent{
+	position:relative;
+	width:100%;
+	height:100%;
+}
+
+.editArea .inputText{
+	position:absolute;
+	outline:none;
+	border:none;
+	background:none;
+	color:#ff0000;
+	width:10px;
+	font-family:"Arial";
+	font-weight: bold;
+	font-size:14px;
+}
+.editArea .testText{
+	position:absolute;
+	left:-9999px;
+	top:-9999px;
+	width:auto;
+	font-family:"Arial";
+	font-weight: bold;
+	font-size:14px;
+	white-space: nowrap;
+}
+.editArea .inputScreen{
+	position:absolute;
+	left:0;top:0;bottom:0;right:0;
+}
