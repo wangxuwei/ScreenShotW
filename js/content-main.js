@@ -5,7 +5,7 @@ var overflowStyle = "";
 
 
 var doc, html, docW, docH, initScrollTop, initScrollLeft, clientH, clientW;
-var wrapperHTML = '<div id="awesome_screenshot_wrapper"><div id="awesome_screenshot_top"></div><div id="awesome_screenshot_right"></div><div id="awesome_screenshot_bottom"></div><div id="awesome_screenshot_left"></div><div id="awesome_screenshot_center" class="drsElement drsMoveHandle"><div id="awesome_screenshot_size"><span>0 X 0</span></div><div id="awesome_screenshot_action"><a href="javascript:void(0)" id="awesome_screenshot_capture"><span></span>Capture</a><a href="javascript:void(0)" id="awesome_screenshot_cancel"><span></span>Cancel</a></div></div></div>';
+var wrapperHTML = '<div id="screenshotapp_screenshot_wrapper"><div id="screenshotapp_screenshot_top"></div><div id="screenshotapp_screenshot_right"></div><div id="screenshotapp_screenshot_bottom"></div><div id="screenshotapp_screenshot_left"></div><div id="screenshotapp_screenshot_center" class="drsElement drsMoveHandle"><div id="screenshotapp_screenshot_size"><span>0 X 0</span></div><div id="screenshotapp_screenshot_action"><a href="javascript:void(0)" id="screenshotapp_screenshot_capture"><span></span>Capture</a><a href="javascript:void(0)" id="screenshotapp_screenshot_cancel"><span></span>Cancel</a></div></div></div>';
 var wrapper, dragresize; // dragresize object
 var isSelected = false;
 
@@ -61,7 +61,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 			initSelectedCapture();
 		  // sendResponse({});
 	  } else if (request.action == "ummask") {
-		  var mask = document.getElementById("awesome_screenshot_wrapper");
+		  var mask = document.getElementById("screenshotapp_screenshot_wrapper");
 		  mask.parentNode.removeChild(mask);
 		  sendResponse({});
 	  } else {
@@ -140,10 +140,10 @@ function getVisibleHeight(){
 function initSelectedCapture() {
 	getDocumentNode();
 	getDocumentDimension();
-	if (!doc.getElementById('awesome_screenshot_wrapper')) {
+	if (!doc.getElementById('screenshotapp_screenshot_wrapper')) {
 		doc.body.innerHTML += wrapperHTML;
 	}
-	wrapper = doc.getElementById('awesome_screenshot_wrapper');
+	wrapper = doc.getElementById('screenshotapp_screenshot_wrapper');
 	updateWrapper();
 	window.addEventListener('resize', windowResize, false);
 	doc.body.addEventListener('keydown', selectedKeyDown, false);
@@ -154,7 +154,7 @@ function initSelectedCapture() {
 function wrapperMouseDown(e) {
 	if (e.button == 0) {
 		var initX = e.pageX, initY = e.pageY;
-		var asSize = doc.getElementById('awesome_screenshot_size');
+		var asSize = doc.getElementById('screenshotapp_screenshot_size');
 
 		wrapper.addEventListener('mousemove', wrapperMouseMove, false);
 		wrapper.addEventListener('mouseup', wrapperMouseUp, false);
@@ -173,7 +173,7 @@ function wrapperMouseDown(e) {
 			wrapper.removeEventListener('mousedown', wrapperMouseDown, false);
 			wrapper.removeEventListener('mousemove', wrapperMouseMove, false);
 			wrapper.removeEventListener('mouseup', wrapperMouseUp, false);
-			setStyle(doc.getElementById('awesome_screenshot_action'), 'display', 'block');
+			setStyle(doc.getElementById('screenshotapp_screenshot_action'), 'display', 'block');
 			setStyle(asSize, 'display', 'block');
 			bindCenter();
 		}
@@ -187,7 +187,7 @@ function windowResize(e) {
 	updateWrapper();
 	getDocumentDimension();
 
-	var center = doc.getElementById('awesome_screenshot_center');
+	var center = doc.getElementById('screenshotapp_screenshot_center');
 	var centerW = getStyle(center, 'width'), centerH = getStyle(center, 'height');
 
 	if (centerW * centerH) {
@@ -203,13 +203,13 @@ function windowResize(e) {
 
 function bindCenter() {
 	var initX, initY, centerW, centerH;
-	var center = doc.getElementById('awesome_screenshot_center');
+	var center = doc.getElementById('screenshotapp_screenshot_center');
 	dragresize = new DragResize('dragresize', {
 		  maxLeft : docW,
 		  maxTop : docH
 	  }); // { minWidth: 50, minHeight: 50, minLeft: 20, minTop: 20, maxLeft: 600,
 							// maxTop: 600 });
-	var asSize = doc.getElementById('awesome_screenshot_size');
+	var asSize = doc.getElementById('screenshotapp_screenshot_size');
 
 	dragresize.isElement = function(elm) {
 		if (elm.className && elm.className.indexOf('drsElement') > -1)
@@ -234,13 +234,13 @@ function bindCenter() {
 	dragresize.select(center); // show resize handle
 
 	// bind action button
-	doc.getElementById('awesome_screenshot_action').addEventListener('click', actionHandler, false);
+	doc.getElementById('screenshotapp_screenshot_action').addEventListener('click', actionHandler, false);
 	function actionHandler(e) {
 		switch (e.target.id) {
-			case 'awesome_screenshot_capture' :
+			case 'screenshotapp_screenshot_capture' :
 				captureSelected();
 				break;
-			case 'awesome_screenshot_cancel' :
+			case 'screenshotapp_screenshot_cancel' :
 				removeSelected();
 				break;
 		}
@@ -347,10 +347,10 @@ function updateCorners(x, y, w, h) { // x:initX, w:centerW
 	var leftW = (w >= 0) ? x : (x + w);
 	var leftH = (h >= 0) ? (docH - y) : (docH - y - h);
 
-	var top = doc.getElementById('awesome_screenshot_top');
-	var right = doc.getElementById('awesome_screenshot_right');
-	var bottom = doc.getElementById('awesome_screenshot_bottom');
-	var left = doc.getElementById('awesome_screenshot_left');
+	var top = doc.getElementById('screenshotapp_screenshot_top');
+	var right = doc.getElementById('screenshotapp_screenshot_right');
+	var bottom = doc.getElementById('screenshotapp_screenshot_bottom');
+	var left = doc.getElementById('screenshotapp_screenshot_left');
 	setStyle(top, 'width', topW + 'px');
 	setStyle(top, 'height', topH + 'px');
 	setStyle(right, 'width', rightW + 'px');
@@ -364,7 +364,7 @@ function updateCenter(x, y, w, h) {
 	var l = (w >= 0) ? x : (x + w);
 	var t = (h >= 0) ? y : (y + h);
 
-	var center = doc.getElementById('awesome_screenshot_center');
+	var center = doc.getElementById('screenshotapp_screenshot_center');
 	setStyle(center, 'width', Math.abs(w) + 'px');
 	setStyle(center, 'height', Math.abs(h) + 'px');
 	setStyle(center, 'top', t + 'px');
