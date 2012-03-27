@@ -41,16 +41,18 @@
 				var dtY = true;
 				$editArea.width(Math.abs(dragExtra.startPageX - dragExtra.pageX));
 				$editArea.height(Math.abs(dragExtra.startPageY - dragExtra.pageY));
+				var left = dragExtra.pageX - $baseArea.offset().left - $editArea.width();
+				var top = dragExtra.pageY - $baseArea.offset().top - $editArea.height();
 				if(dragExtra.pageX < dragExtra.startPageX){
-					var left = dragExtra.pageX - $baseArea.offset().left;
-					$editArea.css("left",left+"px");
+					left = dragExtra.pageX - $baseArea.offset().left;
 					dtX = false;
 				}
 				if(dragExtra.pageY < dragExtra.startPageY){
-					var top = dragExtra.pageY - $baseArea.offset().top;
-					$editArea.css("top",top+"px");
+					top = dragExtra.pageY - $baseArea.offset().top;
 					dtY = false;
 				}
+				$editArea.css("left",left+"px");
+				$editArea.css("top",top+"px");
 				app.draw($editCanvas,dtX,dtY);
 				
 				savePrevGraphics.call(c,dtX,dtY);
