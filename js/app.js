@@ -49,6 +49,8 @@ var app = app || {};
 				drawLine($canvas,graphics,notClear);
 			}else if(drawMode == "ellipse"){
 				drawEllipse($canvas,graphics,notClear);
+			}else if(drawMode == "curve"){
+				drawCurve($canvas,graphics,notClear);
 			}
 		}
 	}
@@ -173,6 +175,30 @@ var app = app || {};
 		gtx.closePath();
 		gtx.stroke();
 		
+	}
+	
+	function drawCurve($canvas,graphics,notClear){
+		var gtx = brite.gtx($canvas);
+		if(!notClear){
+			gtx.fitParent();
+		}
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		var x1 = points.endX;
+		var y1 = points.endY;
+		var locusPoints = graphics.locusPoints;
+		
+		if(locusPoints){
+			gtx.strokeStyle("#ff0000");
+			gtx.lineWidth(3);
+			gtx.beginPath();
+			gtx.moveTo(locusPoints[0].x,locusPoints[0].y);
+			for(var i=0; i < locusPoints.length; i++){
+				gtx.lineTo(locusPoints[i].x,locusPoints[i].y);
+			}
+			gtx.stroke();
+		}
 	}
 	
 	

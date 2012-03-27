@@ -3,6 +3,7 @@
 	function EditArea(){};
 	var _prevGraphics = {};
 	var _startX, _startY, endX, endY;
+	var _locusPoints = [];
   
 	// --------- Component Interface Implementation ---------- //
 	EditArea.prototype.create = function(data,config){
@@ -23,12 +24,17 @@
 				$baseArea.trigger("saveEditCanvasContent",{
 					graphics:_prevGraphics
 				});
+				//when draw a new graphic, init locusPoint
+				_locusPoints = [];
+				
 				_startX = dragExtra.startPageX - thisOffset.left;
 				_startY = dragExtra.startPageY - thisOffset.top;
+				_locusPoints.push({x:_startX,y:_startY});
 			},
 			drag:function(event,dragExtra){
 				_endX = dragExtra.pageX - thisOffset.left;
 				_endY = dragExtra.pageY - thisOffset.top;
+				_locusPoints.push({x:_endX,y:_endY});
 				savePrevGraphics.call(c);
 				app.draw($editCanvas,_prevGraphics);
 			},
@@ -51,6 +57,7 @@
 		}
 		_prevGraphics.drawMode = app.drawMode;
 		_prevGraphics.criticalPoints = {startX:_startX,startY:_startY,endX:_endX,endY:_endY};
+		_prevGraphics.locusPoints = _locusPoints;
 	}
 	// --------- /Component Private API --------- //
 	
