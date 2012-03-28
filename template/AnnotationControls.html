@@ -1,22 +1,27 @@
 <script id="tmpl-AnnotationControls" type="text/html">
     <div class="annotationControls">
-        <div class="annotationControl" data-value="arrow">
-            <span class="ico icoArrow"></span>
+        <div class="control modeControl">
+            <div class="annotationControl" data-value="arrow">
+                <span class="ico icoArrow"></span>
+            </div>
+            <div class="annotationControl " data-value="line">
+                <span class="ico icoLine"></span>
+            </div>
+            <div class="annotationControl " data-value="rect">
+                <span class="ico icoRect"></span>
+            </div>
+            <div class="annotationControl " data-value="ellipse">
+                <span class="ico icoEllipse"></span>
+            </div>
+            <div class="annotationControl " data-value="curve">
+                <span class="ico icoCurve"></span>
+            </div>
+            <div class="annotationControl " data-value="text">
+                <span class="ico icoText"></span>
+            </div>
         </div>
-        <div class="annotationControl " data-value="line">
-            <span class="ico icoLine"></span>
-        </div>
-        <div class="annotationControl " data-value="rect">
-            <span class="ico icoRect"></span>
-        </div>
-        <div class="annotationControl " data-value="ellipse">
-            <span class="ico icoEllipse"></span>
-        </div>
-        <div class="annotationControl " data-value="curve">
-            <span class="ico icoCurve"></span>
-        </div>
-        <div class="annotationControl " data-value="text">
-            <span class="ico icoText"></span>
+        <div class="control colorControl annotationControl">
+            <div class="colorItem" style="{{#if color}}background-color:{{color}}{{/if}}"></div>
         </div>
     </div>
 </script>

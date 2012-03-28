@@ -56,6 +56,7 @@ var app = app || {};
 				var $inputScreen = $("<div class='inputScreen'><div>").appendTo($editAreaContent);
 				var $testText = $("<div class='testText'><div>").appendTo($editAreaContent);
 				var $input = $("<input type='text' class='inputText' />").appendTo($editAreaContent);
+				$input.css("color",app.drawColor);
 				$input.focus();
 				var left = e.pageX - thisOffset.left;
 				var top = e.pageY - thisOffset.top;
@@ -95,6 +96,7 @@ var app = app || {};
 			_prevGraphics.save = true;
 		}
 		_prevGraphics.drawMode = app.drawMode;
+		_prevGraphics.drawColor = app.drawColor;
 		_prevGraphics.criticalPoints = {startX:_startX,startY:_startY,endX:_endX,endY:_endY};
 		_prevGraphics.locusPoints = _locusPoints;
 		_prevGraphics.text = _text;

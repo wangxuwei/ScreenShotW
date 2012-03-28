@@ -1,0 +1,18 @@
+.colorPicker{
+	position:absolute;
+	left:0px;
+	top:0px;
+	background:#ffffff;
+	border:1px solid #cccccc;
+	z-index:2;
+}
+.colorPicker .colors{
+	white-space: nowrap;
+	padding:4px 4px 2px 6px;
+}
+.colorPicker .colors .color{
+	display: inline-block;
+	width:16px;
+	height:16px;
+	border:1px solid #cccccc;
+}

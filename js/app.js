@@ -35,6 +35,10 @@ var app = app || {};
     	return dfd.promise();    		
 	}
 	
+	//default gtx style
+	app.drawMode = "";
+	app.drawColor = "#FF0000";
+	
 	app.draw = function($canvas,graphics,notClear){
 		var drawMode = graphics.drawMode;
 		if(!drawMode){
@@ -69,7 +73,7 @@ var app = app || {};
 		var y1 = points.endY;
 		var D = Math.sqrt((x0-x1) * (x0-x1) + (y0-y1) * (y0-y1));
 		
-		gtx.strokeStyle("#ff0000");
+		gtx.strokeStyle(graphics.drawColor);
 		gtx.lineWidth(3);
 		gtx.moveTo(x0,y0);
 		gtx.lineTo(x1,y1);
@@ -104,7 +108,7 @@ var app = app || {};
 		var cy = (y0 - y1) < 0 ? 2 : -2;
 		
 		gtx.beginPath();
-		gtx.strokeStyle("#ff0000");
+		gtx.strokeStyle(graphics.drawColor);
 		gtx.lineWidth(3);
 		gtx.moveTo(x0+cx,y0+cy);
 		gtx.lineTo(x1-cx,y0+cy);
@@ -128,7 +132,7 @@ var app = app || {};
 		var x1 = points.endX;
 		var y1 = points.endY;
 		
-		gtx.strokeStyle("#ff0000");
+		gtx.strokeStyle(graphics.drawColor);
 		gtx.lineWidth(3);
 		gtx.moveTo(x0,y0);
 		gtx.lineTo(x1,y1);
@@ -151,7 +155,7 @@ var app = app || {};
 		var rWidth = Math.abs(x0 - x1);
 		var rHeight = Math.abs(y0 - y1);
 
-		gtx.strokeStyle("#ff0000");
+		gtx.strokeStyle(graphics.drawColor);
 		gtx.lineWidth(3);
 		var x = x0 > x1 ? x1 : x0;
 		var y = y0 > y1 ? y1 : y0;
@@ -192,7 +196,7 @@ var app = app || {};
 		var locusPoints = graphics.locusPoints;
 		
 		if(locusPoints){
-			gtx.strokeStyle("#ff0000");
+			gtx.strokeStyle(graphics.drawColor);
 			gtx.lineWidth(3);
 			gtx.beginPath();
 			gtx.moveTo(locusPoints[0].x,locusPoints[0].y);
@@ -212,7 +216,7 @@ var app = app || {};
 		var x0 = points.startX;
 		var y0 = points.startY;
 		
-		gtx.fillStyle("#ff0000");
+		gtx.fillStyle(graphics.drawColor);
 		gtx.font("bold 14px Arial");
 		gtx.fillText(graphics.text,x0 + 1,y0 + 13);
 	}
