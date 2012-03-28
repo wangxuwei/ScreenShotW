@@ -11,6 +11,8 @@
 	AnnotationControls.prototype.postDisplay = function(data,config){
 		var c = this;
 		var $e = this.$element;
+		var mainScreen = $e.bComponent("MainScreen");
+		var $mainScreen = mainScreen.$element;
 		
 		$e.delegate(".modeControl .annotationControl","click",function(){
 			var $this = $(this);
@@ -20,6 +22,7 @@
 			if($this.closest(".modeControl").find(".annotationControl.press").size()==0){
 				app.drawMode = "";
 			}
+			$mainScreen.trigger("drawModeChange");
 		});
 		
 		$e.delegate(".colorControl","click",function(){

@@ -1,6 +1,7 @@
 (function($){
 
 	function MainScreen(){};
+	var _drawModeChangeListener = [];
   
 	// --------- Component Interface Implementation ---------- //
 	MainScreen.prototype.create = function(data,config){
@@ -14,12 +15,22 @@
 		brite.display('Toolbar');
 		brite.display('BaseArea');
 		
+		$e.bind("drawModeChange",function(){
+			if(_drawModeChangeListener && $.isFunction(_drawModeChangeListener)){
+				_drawModeChangeListener.call(c);
+			}
+		});
+		
+		
 	}
 	// --------- /Component Interface Implementation ---------- //
 	
-	// --------- Component Private API --------- //	
+	// --------- Component Public API --------- //	
+	MainScreen.prototype.onDrawModeChange = function(drawModeChangeListener){
+		_drawModeChangeListener = drawModeChangeListener;
+	}
 	
-	// --------- /Component Private API --------- //
+	// --------- /Component Public API --------- //
 	
 	// --------- Component Registration --------- //
 	brite.registerComponent("MainScreen",{

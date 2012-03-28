@@ -195,7 +195,7 @@ var app = app || {};
 		var y1 = points.endY;
 		var locusPoints = graphics.locusPoints;
 		
-		if(locusPoints){
+		if(locusPoints && locusPoints.length > 0){
 			gtx.strokeStyle(graphics.drawColor);
 			gtx.lineWidth(3);
 			gtx.beginPath();

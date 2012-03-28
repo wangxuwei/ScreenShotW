@@ -13,14 +13,12 @@
 }
 .annotationControls .colorControl{
 	border-left:1px solid #999999;
+	-webkit-border-top-right-radius:6px;
+	-webkit-border-bottom-right-radius:6px;
 }
 .annotationControls .annotationControl:first-child{
 	-webkit-border-top-left-radius:6px;
 	-webkit-border-bottom-left-radius:6px;
-}
-.annotationControls .annotationControl:last-child{
-	-webkit-border-top-right-radius:6px;
-	-webkit-border-bottom-right-radius:6px;
 }
 .annotationControls .annotationControl{
 	float:left;
