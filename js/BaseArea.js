@@ -30,7 +30,7 @@ var app = app || {};
 			var image = new Image();
 			image.src = imgs;
 			image.onload = function() {
-				gtx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+				gtx.drawImage(image, 0, 0, canvasWidth, canvasHeight,0, 0, canvasWidth, canvasHeight);
 				initDfd.resolve();
 			}
 		}else if(type == "entire"){

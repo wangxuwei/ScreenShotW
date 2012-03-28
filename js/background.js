@@ -9,7 +9,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}else if(request.action == "loaded"){
 		isLoaded = true;
 	}else if(request.action == "cmdVisible"){
-		takeScreenshot("visible");
+		takeScreenshot("visible", request.centerW , request.centerH);
 	}else if(request.action == "cmdSelected"){
 		takeScreenshot("selected");
 	}else if(request.action == "cmdEntire"){
@@ -18,9 +18,11 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 });
 
 // the screenshot control method, which can do screenshot by type
-function takeScreenshot(type) {
+function takeScreenshot(type,w,h) {
 	chrome.tabs.getSelected(null, function(tab) {
 		console.log(tab);
+		sendRequest('tab', tab.id, {action:'destroy_selected'});
+		
 		var loadDfd = $.Deferred();
 		// test if loaded;
 		chrome.tabs.executeScript(tab.id, {file: 'js/content-isLoad.js'}, function(){
@@ -42,7 +44,7 @@ function takeScreenshot(type) {
 		loadDfd.done(function(){
 			var capDfd = $.Deferred();
 			if(type == "visible"){
-				capDfd = captureVisible();
+				capDfd = captureVisible(w,h);	
 			}else if(type == "selected"){
 				capDfd = captureSelected();
 			}else if(type == "entire"){
@@ -74,7 +76,7 @@ function captureEntire(){
 }
 
 //do screenshot with visible part
-function captureVisible(){
+function captureVisible(w,h){
 	var dfd = $.Deferred();
 	chrome.tabs.captureVisibleTab(null, function(img) {
 		var t = new Image();
@@ -83,8 +85,13 @@ function captureVisible(){
 			  console.log(t);
 			  localStorage.setItem("type", JSON.stringify("visible"));
 			  localStorage.setItem("imgs", img);
-			  localStorage.setItem("width", t.width);
-			  localStorage.setItem("height", t.height);
+			  if (w) {
+			  	localStorage.setItem("width", w);
+			  	localStorage.setItem("height", h);
+			  }else{
+			  	localStorage.setItem("width", t.width);
+			  	localStorage.setItem("height", t.height);
+			  }
 			  dfd.resolve(img);
 		  }
 	});
@@ -93,7 +100,6 @@ function captureVisible(){
 
 // do screenshot with selected area
 function captureSelected() {
-	// do something here....
 	var dfd = $.Deferred();
 	chrome.tabs.getSelected(null, function(tab) {
 		  chrome.tabs.sendRequest(tab.id, {
@@ -110,6 +116,9 @@ function captureSelected() {
 // capture api
 function capture(){
 	var dfd = $.Deferred();
+	
+	
+	
 	chrome.tabs.captureVisibleTab(null, function(img) {
 		var t = new Image();
 		t.src = img;
@@ -154,3 +163,13 @@ function sendScrollRequest(){
 	return dfd.promise();
 }
 
+function sendRequest(where, to, req) { //to is a int (id)
+	switch(where) {
+		case 'tab':
+			chrome.tabs.sendRequest(to, req);
+			break;
+		case 'popup':
+			chrome.extension.sendRequest(req);
+			break;
+	}
+}

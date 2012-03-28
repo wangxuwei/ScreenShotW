@@ -10,6 +10,7 @@ $(document).ready(function(){
 		}else if (type == 'selected') {
 			chrome.extension.sendRequest({action:'cmdSelected'});
 		}
+		window.close();
 	});
 	
 });
