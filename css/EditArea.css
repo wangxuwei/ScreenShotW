@@ -18,6 +18,7 @@
 	font-family:"Arial";
 	font-weight: bold;
 	font-size:14px;
+	border:1px solid;
 }
 .editArea .testText{
 	position:absolute;
