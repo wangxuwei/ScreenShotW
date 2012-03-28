@@ -5,6 +5,7 @@ var overflowStyle = "";
 
 
 var doc, html, docW, docH, initScrollTop, initScrollLeft, clientH, clientW;
+var fixedElements = [];
 var wrapperHTML = '<div id="screenshotapp_screenshot_wrapper"><div id="screenshotapp_screenshot_top"></div><div id="screenshotapp_screenshot_right"></div><div id="screenshotapp_screenshot_bottom"></div><div id="screenshotapp_screenshot_left"></div><div id="screenshotapp_screenshot_center" class="drsElement drsMoveHandle"><div id="screenshotapp_screenshot_size"><span>0 X 0</span></div><div id="screenshotapp_screenshot_action"><a href="javascript:void(0)" id="screenshotapp_screenshot_capture"><span></span>Capture</a><a href="javascript:void(0)" id="screenshotapp_screenshot_cancel"><span></span>Cancel</a></div></div></div>';
 var wrapper, dragresize; // dragresize object
 var isSelected = false;
@@ -64,7 +65,10 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 		  var mask = document.getElementById("screenshotapp_screenshot_wrapper");
 		  mask.parentNode.removeChild(mask);
 		  sendResponse({});
-	  } else {
+	  }else if (request.action == "destroy_selected") {
+		  removeSelected();
+	  }
+	  else {
 		  sendResponse({});
 	  }
 });
@@ -280,8 +284,8 @@ function bindCenter() {
 
 		// scroll - x:no, y:no
 		if (w <= clientW && h <= clientH) {
-			setTimeout(sendRequest, 300, {
-				  action : 'visible',
+			setTimeout(sendRequest, 500, {
+				  action : 'cmdVisible',
 				  counter : counter,
 				  ratio : (h % clientH) / clientH,
 				  scrollBar : {
@@ -387,12 +391,37 @@ function getStyle(ele, style) {
 }
 /** ************ selected capture end ************* */
 
+function enableFixedPosition(enableFlag) {
+	if (enableFlag) {
+		for (var i = 0, l = fixedElements.length; i < l; ++i) {
+			fixedElements[i].style.position = "fixed";
+		}
+	} else {
+		var nodeIterator = document.createNodeIterator(document.documentElement, NodeFilter.SHOW_ELEMENT, null, false);
+		var currentNode;
+		while (currentNode = nodeIterator.nextNode()) {
+			var nodeComputedStyle = document.defaultView.getComputedStyle(currentNode, "");
+			// Skip nodes which don't have computeStyle or are invisible.
+			if (!nodeComputedStyle)
+				return;
+			var nodePosition = nodeComputedStyle.getPropertyValue("position");
+			if (nodePosition == "fixed") {
+				fixedElements.push(currentNode);
+				currentNode.style.position = "absolute";
+			}
+		}
+	}
+}
+
+
 function checkScrollBar() {
 	scrollBar.x = window.innerHeight > getClientH() ? true : false;
 	// scrollBar.y = window.innerWidth > html.clientWidth ?true : false;
 	scrollBar.y = document.body.scrollHeight > window.innerHeight ? true : false;
 }
-
+function sendRequest(r) {
+	chrome.extension.sendRequest(r);
+}
 function getDocumentNode() {
 	doc = window.document;
 	if (window.location.href.match(/https?:\/\/mail.google.com/i)) {
