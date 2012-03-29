@@ -9,16 +9,18 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}else if(request.action == "loaded"){
 		isLoaded = true;
 	}else if(request.action == "cmdVisible"){
-		takeScreenshot("visible", request.centerW , request.centerH);
+		takeScreenshot("visible");
 	}else if(request.action == "cmdSelected"){
 		takeScreenshot("selected");
 	}else if(request.action == "cmdEntire"){
 		takeScreenshot("entire");
+	}else if(request.action == "captureSelectedArea"){
+		takeScreenshot("selectedArea", request.centerW , request.centerH);
 	}
 });
 
 // the screenshot control method, which can do screenshot by type
-function takeScreenshot(type,w,h) {
+function takeScreenshot(type, w, h) {
 	chrome.tabs.getSelected(null, function(tab) {
 		console.log(tab);
 		sendRequest('tab', tab.id, {action:'destroy_selected'});
@@ -44,11 +46,13 @@ function takeScreenshot(type,w,h) {
 		loadDfd.done(function(){
 			var capDfd = $.Deferred();
 			if(type == "visible"){
-				capDfd = captureVisible(w,h);	
+				capDfd = captureVisible();	
 			}else if(type == "selected"){
 				capDfd = captureSelected();
 			}else if(type == "entire"){
 				capDfd = captureEntire();
+			}else if(type == "selectedArea"){
+				capDfd = captureSelectedArea(w, h);
 			}
 			
 			if(capDfd.promise){
@@ -76,7 +80,7 @@ function captureEntire(){
 }
 
 //do screenshot with visible part
-function captureVisible(w,h){
+function captureVisible(){
 	var dfd = $.Deferred();
 	chrome.tabs.captureVisibleTab(null, function(img) {
 		var t = new Image();
@@ -85,13 +89,8 @@ function captureVisible(w,h){
 			  console.log(t);
 			  localStorage.setItem("type", JSON.stringify("visible"));
 			  localStorage.setItem("imgs", img);
-			  if (w) {
-			  	localStorage.setItem("width", w);
-			  	localStorage.setItem("height", h);
-			  }else{
-			  	localStorage.setItem("width", t.width);
-			  	localStorage.setItem("height", t.height);
-			  }
+			  localStorage.setItem("width", t.width);
+			  localStorage.setItem("height", t.height);
 			  dfd.resolve(img);
 		  }
 	});
@@ -112,6 +111,24 @@ function captureSelected() {
 	return dfd.promise();
 }
 
+function captureSelectedArea(w,h){
+	var dfd = $.Deferred();
+	chrome.tabs.captureVisibleTab(null, function(img) {
+		var t = new Image();
+		t.src = img;
+		t.onload = function() {
+			  console.log(t);
+			  localStorage.setItem("type", JSON.stringify("selected"));
+			  localStorage.setItem("imgs", img);
+			  if (w) {
+			  	localStorage.setItem("width", w);
+			  	localStorage.setItem("height", h);
+			  }
+			  dfd.resolve(img);
+		  }
+	});
+	return dfd.promise();
+}
 
 // capture api
 function capture(){
