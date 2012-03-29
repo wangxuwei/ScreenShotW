@@ -11,11 +11,11 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}else if(request.action == "cmdVisible"){
 		takeScreenshot("visible");
 	}else if(request.action == "cmdSelected"){
-		takeScreenshot("selected");
+		takeScreenshot("selectedRequest");
 	}else if(request.action == "cmdEntire"){
 		takeScreenshot("entire");
 	}else if(request.action == "captureSelectedArea"){
-		takeScreenshot("selectedArea", request.centerW , request.centerH);
+		takeScreenshot("selected", request.centerW , request.centerH);
 	}
 });
 
@@ -47,18 +47,20 @@ function takeScreenshot(type, w, h) {
 			var capDfd = $.Deferred();
 			if(type == "visible"){
 				capDfd = captureVisible();	
-			}else if(type == "selected"){
-				capDfd = captureSelected();
+			}else if(type == "selectedRequest"){
+				capDfd = null;
+				captureSelectedRequest();
 			}else if(type == "entire"){
 				capDfd = captureEntire();
-			}else if(type == "selectedArea"){
-				capDfd = captureSelectedArea(w, h);
+			}else if(type == "selected"){
+				capDfd = captureSelected(w, h);
 			}
 			
-			if(capDfd.promise){
+			if(capDfd && capDfd.promise){
 				capDfd.done(function(data){
-					var viewTabUrl = [chrome.extension.getURL('screenshot.html'),'?id=', id++].join('');
-					chrome.tabs.create({url: viewTabUrl});
+						// then show the screen
+						var viewTabUrl = [chrome.extension.getURL('screenshot.html'),'?id=', id++].join('');
+						chrome.tabs.create({url: viewTabUrl});
 				})
 			}
 			
@@ -68,15 +70,54 @@ function takeScreenshot(type, w, h) {
 
 // do screenshot with entire full page
 function captureEntire(){
-	var dfd = $.Deferred();
+	var captureDfd = $.Deferred();
 	sendScrollRequest().done(function(data) {
-		localStorage.setItem("type",JSON.stringify("entire"));
-		localStorage.setItem("imgs",JSON.stringify(data.imgs));
-		localStorage.setItem("width",JSON.stringify(data.width));
-		localStorage.setItem("height",JSON.stringify(data.height));
-		dfd.resolve(data);
+		// save to localStorage
+		var imgs = data.imgs
+		var canvasWidth = data.width;
+		var canvasHeight = data.height;
+		
+		var $cacheArea = $(".cacheArea");
+		$cacheArea.width(canvasWidth);
+		$cacheArea.height(canvasHeight);
+		
+		var $canvas = $cacheArea.find(".cacheCanvas");
+		var gtx = brite.gtx($canvas);
+		gtx.fitParent();
+		
+		app.util.serialResolve(imgs,function(imgObj,i){
+			var dfd = $.Deferred();
+			var image = new Image();
+			image.src = imgObj.img;
+			image.onload = function(){
+				var sourceX = 0;
+				var sourceY = 0;
+				var sourceWidth = imgObj.remainArea.remainWidth;
+				var sourceHeight = imgObj.remainArea.remainHeight;
+				var destX = imgObj.coop.x;
+				var destY = imgObj.coop.y;
+				var destWidth = imgObj.remainArea.remainWidth;
+				var destHeight = imgObj.remainArea.remainHeight;
+				if(imgObj.complete.x){
+					sourceX = image.width - sourceWidth;
+				}
+				if(imgObj.complete.y){
+					sourceY = image.height - sourceHeight;
+				}
+				gtx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight,destX,destY, destWidth, destHeight);
+				dfd.resolve();
+			}
+			return dfd.promise();
+		}).done(function(){
+			var finishImage = {};
+			finishImage.data = $canvas[0].toDataURL("image/png");
+			finishImage.width = canvasWidth;
+			finishImage.height = canvasHeight;
+			saveImage(finishImage);
+			captureDfd.resolve(finishImage);
+		});
 	});
-	return dfd.promise();
+	return captureDfd.promise();
 }
 
 //do screenshot with visible part
@@ -86,45 +127,62 @@ function captureVisible(){
 		var t = new Image();
 		t.src = img;
 		t.onload = function() {
-			  console.log(t);
-			  localStorage.setItem("type", JSON.stringify("visible"));
-			  localStorage.setItem("imgs", img);
-			  localStorage.setItem("width", t.width);
-			  localStorage.setItem("height", t.height);
-			  dfd.resolve(img);
+			// save to localStorage
+			var canvasWidth = t.width;
+			var canvasHeight = t.height;
+			
+			var $cacheArea = $(".cacheArea");
+			$cacheArea.width(canvasWidth);
+			$cacheArea.height(canvasHeight);
+			
+			var $canvas = $cacheArea.find(".cacheCanvas");
+			var gtx = brite.gtx($canvas);
+			gtx.fitParent();
+			gtx.drawImage(t, 0, 0, canvasWidth, canvasHeight,0, 0, canvasWidth, canvasHeight);
+			
+			var finishImage = {};
+			finishImage.data = $canvas[0].toDataURL("image/png");
+			finishImage.width = canvasWidth;
+			finishImage.height = canvasHeight;
+			saveImage(finishImage);
+			dfd.resolve(finishImage);
 		  }
 	});
 	return dfd.promise();
 }
 
 // do screenshot with selected area
-function captureSelected() {
-	var dfd = $.Deferred();
-	chrome.tabs.getSelected(null, function(tab) {
-		  chrome.tabs.sendRequest(tab.id, {
-			    action : 'mask',
-			    data : {}
-		    }, function(response) {
-			    dfd.resolve();
-		    });
-	  });
-	return dfd.promise();
-}
-
-function captureSelectedArea(w,h){
+function captureSelected(w,h){
 	var dfd = $.Deferred();
 	chrome.tabs.captureVisibleTab(null, function(img) {
 		var t = new Image();
 		t.src = img;
 		t.onload = function() {
-			  console.log(t);
-			  localStorage.setItem("type", JSON.stringify("selected"));
-			  localStorage.setItem("imgs", img);
-			  if (w) {
-			  	localStorage.setItem("width", w);
-			  	localStorage.setItem("height", h);
-			  }
-			  dfd.resolve(img);
+			var width = t.width;
+			var height = t.height;
+			if (w) {
+				width = w;
+				height = h;
+			}
+			// save to localStorage
+			var canvasWidth = width;
+			var canvasHeight = height;
+			
+			var $cacheArea = $(".cacheArea");
+			$cacheArea.width(canvasWidth);
+			$cacheArea.height(canvasHeight);
+			
+			var $canvas = $cacheArea.find(".cacheCanvas");
+			var gtx = brite.gtx($canvas);
+			gtx.fitParent();
+			gtx.drawImage(t, 0, 0, canvasWidth, canvasHeight,0, 0, canvasWidth, canvasHeight);
+			
+			var finishImage = {};
+			finishImage.data = $canvas[0].toDataURL("image/png");
+			finishImage.width = canvasWidth;
+			finishImage.height = canvasHeight;
+			saveImage(finishImage);
+			dfd.resolve(finishImage);
 		  }
 	});
 	return dfd.promise();
@@ -133,21 +191,25 @@ function captureSelectedArea(w,h){
 // capture api
 function capture(){
 	var dfd = $.Deferred();
-	
-	
-	
 	chrome.tabs.captureVisibleTab(null, function(img) {
-		var t = new Image();
-		t.src = img;
-		t.onload = function(){
-			console.log(t);
-		}
 		dfd.resolve(img);
 	});
 	
 	return dfd.promise();
 }
 
+function saveImage(finishImage){
+	localStorage.setItem("image", JSON.stringify(finishImage));
+}
+
+function captureSelectedRequest() {
+	chrome.tabs.getSelected(null, function(tab) {
+		  chrome.tabs.sendRequest(tab.id, {
+			    action : 'mask',
+			    data : {}
+		    });
+	  });
+}
 
 // scrolling the page when doing entire full page screenshot
 function sendScrollRequest(){
