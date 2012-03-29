@@ -30,6 +30,24 @@ var app = app || {};
 			var image = new Image();
 			image.src = imgs;
 			image.onload = function() {
+				gtx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+				initDfd.resolve();
+			}
+		}else if(type == "selected"){
+			var imgs = localStorage.getItem("imgs");
+			var canvasWidth = JSON.parse(localStorage.getItem("width"));
+			var canvasHeight = JSON.parse(localStorage.getItem("height"));
+			$e.width(canvasWidth);
+			$e.height(canvasHeight);
+			
+			var $canvas = $e.find(".baseAreaCanvas");
+			c.$canvas = $canvas;
+			var gtx = brite.gtx($canvas);
+			gtx.fitParent();
+			
+			var image = new Image();
+			image.src = imgs;
+			image.onload = function() {
 				gtx.drawImage(image, 0, 0, canvasWidth, canvasHeight,0, 0, canvasWidth, canvasHeight);
 				initDfd.resolve();
 			}

@@ -57,18 +57,15 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     		sendResponse({complete:{x:complete.xComplete,y:complete.yComplete},coop:{x:x,y:y},remainArea:{remainWidth:remainWidth,remainHeight:remainHeight},width:width,height:height});
     	}, 300);
     	
-    }else
-	if (request.action == "mask") {
-			initSelectedCapture();
-		  // sendResponse({});
+    } else if (request.action == "mask") {
+		  initSelectedCapture();
 	  } else if (request.action == "ummask") {
 		  var mask = document.getElementById("screenshotapp_screenshot_wrapper");
 		  mask.parentNode.removeChild(mask);
 		  sendResponse({});
-	  }else if (request.action == "destroy_selected") {
+	  } else if (request.action == "destroy_selected") {
 		  removeSelected();
-	  }
-	  else {
+	  } else {
 		  sendResponse({});
 	  }
 });
@@ -198,11 +195,8 @@ function windowResize(e) {
 		var initX = getStyle(center, 'left'), initY = getStyle(center, 'top');
 		updateCorners(initX, initY, centerW, centerH);
 	}
-	// update dragresize area
 	dragresize.maxLeft = docW;
 	dragresize.maxTop = docH;
-	// updateCorners: only right and bottom
-	// handle zoom: zoom action invoke window.resize event
 }
 
 function bindCenter() {
@@ -227,11 +221,9 @@ function bindCenter() {
 	dragresize.ondragmove = function(isResize, ev) {
 		var x = dragresize.elmX, y = dragresize.elmY, w = dragresize.elmW, h = dragresize.elmH;
 		asSize.children[0].innerHTML = Math.abs(w) + ' X ' + Math.abs(h);
-
 		updateCorners(x, y, w, h);
 		updateCenter(x, y, w, h);
 		autoScroll(ev);
-
 	};
 
 	dragresize.apply(wrapper);
@@ -261,8 +253,6 @@ function bindCenter() {
 		clientH = html.clientHeight;
 		clientW = html.clientWidth;
 		isSelected = true;
-		// return;
-		// prepare selected area
 		var x = dragresize.elmX, y = dragresize.elmY, w = dragresize.elmW, h = dragresize.elmH;
 		var offX = x - doc.body.scrollLeft, offY = y - doc.body.scrollTop;
 
@@ -282,43 +272,17 @@ function bindCenter() {
 		getDocumentDimension();
 		updateCorners(x, y, w, h);
 
-		// scroll - x:no, y:no
 		if (w <= clientW && h <= clientH) {
 			setTimeout(sendRequest, 500, {
-				  action : 'cmdVisible',
-				  counter : counter,
+				  action : 'captureSelectedArea',
 				  ratio : (h % clientH) / clientH,
-				  scrollBar : {
-					  x : false,
-					  y : false
-				  },
 				  centerW : w,
 				  centerH : h
 			  });
 			return;
 		}
-		setTimeout(sendRequest, 300, {
-			  action : 'scroll_next_done'
-		  });
 	}
-
-	// use css3 to build bg-image
-	/*
-	 * for(var i=0; i<center.children.length; i++) { var handle =
-	 * center.children[i];
-	 * 
-	 * if (handle.className && handle.className.indexOf('dragresize')>-1) {
-	 * console.log(rootURL+'images/spot.png'); setStyle(handle, 'background-image',
-	 * rootURL+'images/spot.png'); } }
-	 */
-	// 1. unbind wrapper mousedown
-	// 2. bind drag and
 }
-
-// bind action button:
-// 1. done -> new tab
-// 2. cancel ->
-// all : unbind window.resize, mouse down
 
 function removeSelected() {
 	window.removeEventListener('resize', windowResize);
@@ -375,9 +339,7 @@ function updateCenter(x, y, w, h) {
 	setStyle(center, 'left', l + 'px');
 }
 function updateWrapper() {
-	// console.log(doc.width,cacheDocH);
 	setStyle(wrapper, 'display', 'none');
-	// setStyle(wrapper, 'width', doc.width+'px');
 	setStyle(wrapper, 'width', doc.body.scrollWidth + 'px');
 	setStyle(wrapper, 'height', document.body.scrollHeight + 'px');//todo
 	setStyle(wrapper, 'display', 'block');
@@ -401,7 +363,6 @@ function enableFixedPosition(enableFlag) {
 		var currentNode;
 		while (currentNode = nodeIterator.nextNode()) {
 			var nodeComputedStyle = document.defaultView.getComputedStyle(currentNode, "");
-			// Skip nodes which don't have computeStyle or are invisible.
 			if (!nodeComputedStyle)
 				return;
 			var nodePosition = nodeComputedStyle.getPropertyValue("position");
@@ -416,7 +377,6 @@ function enableFixedPosition(enableFlag) {
 
 function checkScrollBar() {
 	scrollBar.x = window.innerHeight > getClientH() ? true : false;
-	// scrollBar.y = window.innerWidth > html.clientWidth ?true : false;
 	scrollBar.y = document.body.scrollHeight > window.innerHeight ? true : false;
 }
 function sendRequest(r) {
@@ -429,8 +389,6 @@ function getDocumentNode() {
 	}
 }
 function getDocumentDimension() {
-	// docW = doc.width;
-	// docH = doc.height;
 	docH = doc.body.scrollHeight;
 	docW = doc.body.scrollWidth;
 }
