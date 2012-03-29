@@ -57,6 +57,8 @@ var app = app || {};
 				drawCurve($canvas,graphics,notClear);
 			}else if(drawMode == "text"){
 				drawText($canvas,graphics,notClear);
+			}else if(drawMode == "eraser"){
+				drawEraser($canvas,graphics,notClear);
 			}
 		}
 	}
@@ -219,6 +221,31 @@ var app = app || {};
 		gtx.fillStyle(graphics.drawColor);
 		gtx.font("bold 14px Arial");
 		gtx.fillText(graphics.text,x0 + 1,y0 + 13);
+	}
+	
+	function drawEraser($canvas,graphics,notClear){
+		var gtx = brite.gtx($canvas);
+		if(!notClear){
+			gtx.fitParent();
+		}
+		var points = graphics.criticalPoints;
+		var x0 = points.startX;
+		var y0 = points.startY;
+		var x1 = points.endX;
+		var y1 = points.endY;
+		var locusPoints = graphics.locusPoints;
+		var d = 6;
+		
+		if(locusPoints && locusPoints.length > 0){
+			gtx.strokeStyle("#ffffff");
+			gtx.lineWidth(10);
+			gtx.beginPath();
+			gtx.moveTo(locusPoints[0].x,locusPoints[0].y);
+			for(var i=0; i < locusPoints.length; i++){
+				gtx.lineTo(locusPoints[i].x,locusPoints[i].y);
+			}
+			gtx.stroke();
+		}
 	}
 	
 	
