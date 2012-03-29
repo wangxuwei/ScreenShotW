@@ -94,13 +94,13 @@ var app = app || {};
 				$input.css("top", top + "px");
 				
 				$input.bind("keyup keydown blur update",function(){
+					_text = $input.val();
+					savePrevGraphics.call(c);
 					$input.width($input.width()+30);
 					checkInputWidth($input,$testText);
 				});
 				
 				$inputScreen.click(function(se){
-					_text = $input.val();
-					savePrevGraphics.call(c);
 					$baseArea.trigger("saveEditCanvasContent", {
 						graphics : _prevGraphics
 					});
