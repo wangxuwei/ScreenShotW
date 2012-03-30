@@ -1450,7 +1450,7 @@ brite.ua = {};
 		var methods = [ 'beginPath', 'clip', 'closePath', 'drawImage', 'fill', 'fillText',
 		// these are managed now 'arc','arcTo', 'lineTo', 'moveTo', 'bezierCurveTo', 'quadraticCurveTo', 'rect',,
 		// 'clearRect','fillRect','strokeRect','translate'
-		'restore', 'rotate', 'save', 'scale', 'setTransform', 'stroke', 'strokeText', 'transform', ];
+		'restore', 'rotate', 'save', 'scale', 'setTransform', 'stroke', 'strokeText', 'transform' ];
 
 		var getterMethods = [ 'createPattern', 'drawFocusRing', 'isPointInPath', 'measureText', // drawFocusRing not
 																								// currently supported
