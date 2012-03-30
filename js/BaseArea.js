@@ -13,27 +13,31 @@ var app = app || {};
 	BaseArea.prototype.init = function(data,config){
 		var c = this;
 		var $e = this.$element;
-		var imageObj = JSON.parse(localStorage.getItem("image"));
-		var canvasWidth = imageObj.width;
-		var canvasHeight = imageObj.height;
-		var initDfd = $.Deferred();
-		$e.width(canvasWidth);
-		$e.height(canvasHeight);
-		
-		var $canvas = $e.find(".baseAreaCanvas");
-		c.$canvas = $canvas;
-		var gtx = brite.gtx($canvas);
-		gtx.fitParent();
-		
-		var image = new Image();
-		image.src = imageObj.data;
-		image.onload = function() {
-			gtx.drawImage(image, 0, 0, canvasWidth, canvasHeight,0, 0, canvasWidth, canvasHeight);
-			initDfd.resolve();
-		}
-		
-		initDfd.done(function(){
-			brite.display("EditArea");
+//		var imageObj = JSON.parse(localStorage.getItem("image"));
+		brite.dm.list("Images").done(function(imageObjs){
+			var imageObj = imageObjs[imageObjs.length - 1];
+//			brite.dm.remove("Images",imageObj.id);
+			var canvasWidth = imageObj.width;
+			var canvasHeight = imageObj.height;
+			var initDfd = $.Deferred();
+			$e.width(canvasWidth);
+			$e.height(canvasHeight);
+			
+			var $canvas = $e.find(".baseAreaCanvas");
+			c.$canvas = $canvas;
+			var gtx = brite.gtx($canvas);
+			gtx.fitParent();
+			
+			var image = new Image();
+			image.src = imageObj.data;
+			image.onload = function() {
+				gtx.drawImage(image, 0, 0, canvasWidth, canvasHeight,0, 0, canvasWidth, canvasHeight);
+				initDfd.resolve();
+			}
+			
+			initDfd.done(function(){
+				brite.display("EditArea");
+			});
 		});
 	}
 		

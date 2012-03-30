@@ -113,8 +113,9 @@ function captureEntire(){
 			finishImage.data = $canvas[0].toDataURL("image/png");
 			finishImage.width = canvasWidth;
 			finishImage.height = canvasHeight;
-			saveImage(finishImage);
-			captureDfd.resolve(finishImage);
+			saveImage(finishImage).done(function(){
+				captureDfd.resolve(finishImage);
+			});
 		});
 	});
 	return captureDfd.promise();
@@ -144,8 +145,9 @@ function captureVisible(){
 			finishImage.data = $canvas[0].toDataURL("image/png");
 			finishImage.width = canvasWidth;
 			finishImage.height = canvasHeight;
-			saveImage(finishImage);
-			dfd.resolve(finishImage);
+			saveImage(finishImage).done(function(){
+				dfd.resolve(finishImage);
+			});
 		  }
 	});
 	return dfd.promise();
@@ -181,8 +183,9 @@ function captureSelected(w,h){
 			finishImage.data = $canvas[0].toDataURL("image/png");
 			finishImage.width = canvasWidth;
 			finishImage.height = canvasHeight;
-			saveImage(finishImage);
-			dfd.resolve(finishImage);
+			saveImage(finishImage).done(function(){
+				dfd.resolve(finishImage);
+			});
 		  }
 	});
 	return dfd.promise();
@@ -199,7 +202,12 @@ function capture(){
 }
 
 function saveImage(finishImage){
-	localStorage.setItem("image", JSON.stringify(finishImage));
+	var dfd = $.Deferred();
+//	localStorage.setItem("image", JSON.stringify(finishImage));
+	brite.dm.create("Images",finishImage).done(function(){
+		dfd.resolve();
+	});
+	return dfd.promise();
 }
 
 function captureSelectedRequest() {
