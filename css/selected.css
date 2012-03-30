@@ -1,4 +1,4 @@
-#screenshotapp_screenshot_wrapper {
+#screenshotapp_wrapper {
 	display:none;
 	position: absolute;
 	top:0; left:0;
@@ -8,7 +8,7 @@
 	font: normal normal normal 12px/1 Helvetica, arial, sans-serif;
 }
 
-#screenshotapp_screenshot_wrapper>div {
+#screenshotapp_wrapper>div {
 	position:absolute;
 	background-color: rgba(0, 0, 0, 0.3);
 	cursor:auto;
