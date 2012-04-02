@@ -43,8 +43,10 @@ var app = app || {};
 		
 		gtx.strokeStyle(graphics.drawColor);
 		gtx.lineWidth(3);
+		gtx.beginPath();
 		gtx.moveTo(x0,y0);
 		gtx.lineTo(x1,y1);
+		gtx.closePath();
 		gtx.stroke();
 		
 		var arrowLenth = 8;
@@ -53,10 +55,12 @@ var app = app || {};
 		var xb = x1 + arrowLenth * ((x0 - x1) - (y0 - y1) / 2) / D;
 		var yb = y1 + arrowLenth * ((y0 - y1) + (x0 - x1) / 2) / D;
 		
+		gtx.beginPath();
 		gtx.moveTo(x1, y1);
 		gtx.lineTo(xa, ya);
 		gtx.moveTo(x1, y1);
 		gtx.lineTo(xb, yb);
+		gtx.closePath();
 		gtx.stroke();
 	}
 	
@@ -102,8 +106,10 @@ var app = app || {};
 		
 		gtx.strokeStyle(graphics.drawColor);
 		gtx.lineWidth(3);
+		gtx.beginPath();
 		gtx.moveTo(x0,y0);
 		gtx.lineTo(x1,y1);
+		gtx.closePath();
 		gtx.stroke();
 		
 	}
@@ -163,6 +169,7 @@ var app = app || {};
 		var y1 = points.endY;
 		var locusPoints = graphics.locusPoints;
 		
+		gtx.beginPath();
 		if(locusPoints && locusPoints.length > 0){
 			gtx.strokeStyle(graphics.drawColor);
 			gtx.lineWidth(3);
@@ -173,6 +180,7 @@ var app = app || {};
 			}
 			gtx.stroke();
 		}
+		gtx.closePath();
 	}
 	
 	function drawText($canvas,graphics,notClear){
@@ -201,7 +209,7 @@ var app = app || {};
 		var y1 = points.endY;
 		var locusPoints = graphics.locusPoints;
 		var d = 6;
-		
+		gtx.beginPath();
 		if(locusPoints && locusPoints.length > 0){
 			gtx.strokeStyle("#ffffff");
 			gtx.lineWidth(10);
@@ -212,6 +220,7 @@ var app = app || {};
 			}
 			gtx.stroke();
 		}
+		gtx.closePath();
 	}
 	
 	
