@@ -15,7 +15,6 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}else if(request.action == "cmdEntire"){
 		takeScreenshot("entire");
 	}else if(request.action == "captureSelectedArea"){
-		console.log(request.centerH)
 		takeScreenshot("selected", request.centerW , request.centerH);
 	}
 });
@@ -23,14 +22,12 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 // the screenshot control method, which can do screenshot by type
 function takeScreenshot(type, w, h) {
 	chrome.tabs.getSelected(null, function(tab) {
-		console.log(tab);
 //		sendRequest('tab', tab.id, {action:'destroy_selected'});
 		
 		var loadDfd = $.Deferred();
 		// test if loaded;
 		chrome.tabs.executeScript(tab.id, {file: 'js/content-isLoad.js'}, function(){
 			if (!isLoaded) {
-				console.log("insert")
 				    chrome.tabs.insertCSS(tab.id, {
 					      file : 'css/selected.css'
 				      }, function() {

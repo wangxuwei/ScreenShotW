@@ -195,7 +195,6 @@ function selectedKeyDown(e) {
 		removeSelected();
 }
 function windowResize(e) {
-	console.log("------ri")
 	updateWrapper();
 	getDocumentDimension();
 
@@ -215,13 +214,10 @@ function bindCenter() {
 	center.bDrag({
 						draggable: true,
 						start: function(e,extra) {
-							console.log("----------start---");
 							$("div.dragresize").remove();
 							//center.append(cornerHtml);
 						},
 						drag: function(e,extra) {
-							console.log("----------drag---"+extra.pageX+"---"+extra.pageY);
-							console.log((extra.pageX-$(this).position().left)+" "+$(this).position().left);
 							
 							var w = center.width(), h = center.height() ,x = $(this).position().left, y = $(this).position().top; 
 							$('#screenshotapp_screenshot_size').find("span").html( Math.abs(w) + ' X ' + Math.abs(h));
@@ -325,7 +321,6 @@ function autoScroll(e) {
 }
 
 function updateCorners(x, y, w, h) { // x:initX, w:centerW
-	console.log("updateCorners--->"+x+" "+y+" "+w+" "+h)
 	var topW = (w >= 0) ? (x + w) : x;
 	var topH = (h >= 0) ? y : (y + h);
 	var rightW = (w >= 0) ? (docW - x - w) : (docW - x);
@@ -334,7 +329,6 @@ function updateCorners(x, y, w, h) { // x:initX, w:centerW
 	var bottomH = (h >= 0) ? (docH - y - h) : (docH - y);
 	var leftW = (w >= 0) ? x : (x + w);
 	var leftH = (h >= 0) ? (docH - y) : (docH - y - h);
-console.log("updateCorners--->"+topW+" "+h)
 	
 	
 	$("#screenshotapp_screenshot_top").css('width', topW + 'px').css('height', topH + 'px');
@@ -346,7 +340,6 @@ console.log("updateCorners--->"+topW+" "+h)
 	$("#screenshotapp_screenshot_left").css('width', leftW + 'px').css('height', leftH + 'px');
 }
 function updateCenter(x, y, w, h) {
-	console.log("updateCenter--->"+x+" "+y+" "+w+" "+h)
 	var l = (w >= 0) ? x : (x + w);
 	var t = (h >= 0) ? y : (y + h);
 
