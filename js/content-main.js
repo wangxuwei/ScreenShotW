@@ -1,3 +1,4 @@
+var isContentScriptLoaded = true;
 new function(){
    var save$ = $;
    $ = null;
@@ -10,7 +11,7 @@ var brite=brite||{};(function($){var _componentDefStore={};var _templateLoadedPe
 
 
 
-var isContentScriptLoaded = true;
+
 var overflowStyle = "";
 
 
@@ -70,9 +71,6 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
     	
     } else if (request.action == "mask") {
 		  initSelectedCapture();
-		  setTimeout(sendRequest, 300, {
-				  action : 'loaded'
-			  });
 	  } else if (request.action == "ummask") {
 		  var mask = document.getElementById("screenshotapp_wrapper");
 		  mask.parentNode.removeChild(mask);
@@ -213,7 +211,7 @@ function windowResize(e) {
 function bindCenter() {
 	var initX, initY, centerW, centerH;
 	var center = $("#screenshotapp_screenshot_center");
-	center.append(cornerHtml);
+	//center.append(cornerHtml);
 	center.bDrag({
 						draggable: true,
 						start: function(e,extra) {
@@ -229,10 +227,10 @@ function bindCenter() {
 							$('#screenshotapp_screenshot_size').find("span").html( Math.abs(w) + ' X ' + Math.abs(h));
 							updateCorners(x, y, w, h);
 							updateCenter(x, y, w, h);
-							autoScroll(e);							
+										autoScroll(e);			
 						},
 						end: function(e) {
-							center.append(cornerHtml);
+							//center.append(cornerHtml);
 //							$("#cornerContain").bDrag(
 //								{
 //									draggable: true,
@@ -327,6 +325,7 @@ function autoScroll(e) {
 }
 
 function updateCorners(x, y, w, h) { // x:initX, w:centerW
+	console.log("updateCorners--->"+x+" "+y+" "+w+" "+h)
 	var topW = (w >= 0) ? (x + w) : x;
 	var topH = (h >= 0) ? y : (y + h);
 	var rightW = (w >= 0) ? (docW - x - w) : (docW - x);
@@ -335,20 +334,19 @@ function updateCorners(x, y, w, h) { // x:initX, w:centerW
 	var bottomH = (h >= 0) ? (docH - y - h) : (docH - y);
 	var leftW = (w >= 0) ? x : (x + w);
 	var leftH = (h >= 0) ? (docH - y) : (docH - y - h);
-
-	$("#screenshotapp_screenshot_top").css('width', topW + 'px');
-	$("#screenshotapp_screenshot_top").css('height', topH + 'px');
+console.log("updateCorners--->"+topW+" "+h)
 	
-	$("#screenshotapp_screenshot_right").css('width', rightW + 'px');
-	$("#screenshotapp_screenshot_right").css('height', rightH + 'px');
 	
-	$("#screenshotapp_screenshot_bottom").css('width', bottomW + 'px');
-	$("#screenshotapp_screenshot_bottom").css('height', bottomH + 'px');
+	$("#screenshotapp_screenshot_top").css('width', topW + 'px').css('height', topH + 'px');
 	
-	$("#screenshotapp_screenshot_left").css('width', leftW + 'px');
-	$("#screenshotapp_screenshot_left").css('height', leftH + 'px');
+	$("#screenshotapp_screenshot_right").css('width', rightW + 'px').css('height', rightH + 'px');
+	
+	$("#screenshotapp_screenshot_bottom").css('width', bottomW + 'px').css('height', bottomH + 'px');
+	
+	$("#screenshotapp_screenshot_left").css('width', leftW + 'px').css('height', leftH + 'px');
 }
 function updateCenter(x, y, w, h) {
+	console.log("updateCenter--->"+x+" "+y+" "+w+" "+h)
 	var l = (w >= 0) ? x : (x + w);
 	var t = (h >= 0) ? y : (y + h);
 
