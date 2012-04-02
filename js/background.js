@@ -1,13 +1,33 @@
 var id = 100;
 
 var isLoaded = false;
+brite.dm.invoke("removeAll", "InsertTabFlag");
+chrome.tabs.onUpdated.addListener(function(tabId) {
+	 	var ops = {};
+				      	ops.equal = {
+							tabid : tabId+""
+						}
+	brite.dm.list("InsertTabFlag", ops).done(function(tabs) {
+				      		for (var n = 0; n < tabs.length; n++) {
+								brite.dm.remove("InsertTabFlag",tabs[n].id)	      			
+				      		}
+		  				})
+});
 
 //accept the request from popup.html, content script
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	if(request.action == "notLoaded"){
 		isLoaded = false;
+		console.log("----->load false:"+isLoaded);
 	}else if(request.action == "loaded"){
 		isLoaded = true;
+		console.log("----->load2:"+isLoaded)
+		chrome.tabs.getSelected(null, function(tab) {
+			brite.dm.create("InsertTabFlag",{tabid: ""+tab.id}).done(function(ob){
+				console.log(ob)
+			})
+		})
+		
 	}else if(request.action == "cmdVisible"){
 		takeScreenshot("visible");
 	}else if(request.action == "cmdSelected"){
@@ -15,6 +35,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}else if(request.action == "cmdEntire"){
 		takeScreenshot("entire");
 	}else if(request.action == "captureSelectedArea"){
+		console.log("----->do select:"+isLoaded)
 		takeScreenshot("selected", request.centerW , request.centerH);
 	}
 });
@@ -28,16 +49,29 @@ function takeScreenshot(type, w, h) {
 		var loadDfd = $.Deferred();
 		// test if loaded;
 		chrome.tabs.executeScript(tab.id, {file: 'js/content-isLoad.js'}, function(){
+			console.log("----->is load:"+isLoaded)
 			if (!isLoaded) {
-				console.log("insert")
 				    chrome.tabs.insertCSS(tab.id, {
 					      file : 'css/selected.css'
 				      }, function() {
-					      chrome.tabs.executeScript(tab.id, {
+				      	var ops = {};
+				      	ops.equal = {
+							tabid : tab.id+""
+						}
+				      	brite.dm.list("InsertTabFlag", ops).done(function(tabs) {
+				      		console.log(tabs.length)
+				      		if (tabs.length==0) {
+				      			console.log("---doinsert")
+				      		chrome.tabs.executeScript(tab.id, {
 						        file : 'js/content-main.js'
 					        }, function() {
 						        loadDfd.resolve();
-					        });
+					        });	
+				      		}else{
+				      			console.log("---no insert")
+				      		 	loadDfd.resolve();
+				      		}
+		  				})
 				      });
 			    } else {
 				    loadDfd.resolve();
