@@ -15,6 +15,7 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 	}else if(request.action == "cmdEntire"){
 		takeScreenshot("entire");
 	}else if(request.action == "captureSelectedArea"){
+		console.log(request.centerH)
 		takeScreenshot("selected", request.centerW , request.centerH);
 	}
 });

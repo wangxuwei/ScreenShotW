@@ -20,4 +20,8 @@ var _SQLiteDb;
 			dtype : 'Integer'
 		} ]));
 		
+		brite.registerDao("InsertTabFlag", new brite.dao.SQLiteDao("app_InsertTabFlag", "id", [ {
+			column : 'tabid',
+			dtype : 'TEXT'
+		}]));
 })(jQuery);
