@@ -13,6 +13,9 @@ var app = app || {};
 	BaseArea.prototype.init = function(data,config){
 		var c = this;
 		var $e = this.$element;
+		var $canvas = $e.find(".baseAreaCanvas");
+		c.$canvas = $canvas;
+		
 //		var imageObj = JSON.parse(localStorage.getItem("image"));
 		brite.dm.list("Images").done(function(imageObjs){
 			var imageObj = imageObjs[imageObjs.length - 1];
@@ -23,8 +26,6 @@ var app = app || {};
 			$e.width(canvasWidth);
 			$e.height(canvasHeight);
 			
-			var $canvas = $e.find(".baseAreaCanvas");
-			c.$canvas = $canvas;
 			var gtx = brite.gtx($canvas);
 			gtx.fitParent();
 			
